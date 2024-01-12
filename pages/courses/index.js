@@ -15,7 +15,7 @@ const Courses = () => {
     if (isLogin == null) {
       push('/login');
     }
-    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/courses`)
+    axios.get(`/api/courses`)
       .then((response) => {
         setCourses(response.data.data);
         setLoading(false);

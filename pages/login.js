@@ -30,7 +30,7 @@ const Login = () => {
     // console.table({ name, email, password });
     try {
       setLoading(true);
-      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+      const { data } = await axios.post(`/api/login`, {
         email,
         password,
       });
@@ -45,6 +45,8 @@ const Login = () => {
       router.push("/user");
       // setLoading(false);
     } catch (err) {
+      console.log("ERROR");
+      console.log(err);
       toast(err.response.data);
       setLoading(false);
     }
@@ -78,7 +80,8 @@ const Login = () => {
             type="submit"
             style={{
               "background-color": "#007bff",
-              "border-color": "#007bff" }}
+              "border-color": "#007bff"
+            }}
             className="btn btn-primary btn-block"
             disabled={!email || !password || loading}
           >

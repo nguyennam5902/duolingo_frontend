@@ -38,7 +38,7 @@ async function handleEndCourse(point) {
    userAfter.data.weekScore += point;
    window.localStorage.setItem("user", JSON.stringify(userAfter));
 
-   await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/profile/addScore`, {
+   await axios.post(`/api/profile/addScore`, {
       id: userAfter.data._id,
       score: point,
    });
@@ -382,7 +382,7 @@ const QuizContent = ({ quizData }) => {
          if (showResult) {
             const userID = String(JSON.parse(window.localStorage.getItem('user')).data._id);
             const isPerfect = correct === choice.length + fill.length + sentence.length + 1 ? 1 : 0;
-            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/courses/${courseID}/lessons/${lessonID}/submit/${isPerfect}`, {
+            axios.post(`/api/courses/${courseID}/lessons/${lessonID}/submit/${isPerfect}`, {
                userID
             });
             return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', marginTop: '15%' }}>
