@@ -5,11 +5,12 @@ import { SyncOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { Context } from "../context";
 import { useRouter } from "next/router";
+import Head from "next/dist/next-server/lib/head";
 
 const Register = () => {
-  const [name, setName] = useState("Test");
-  const [email, setEmail] = useState("test@gmail.com");
-  const [password, setPassword] = useState("rrrrrr");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const {
@@ -33,71 +34,77 @@ const Register = () => {
         password,
       });
       // console.log("REGISTER RESPONSE", data);
-      toast("Registration successful. Please login.");
-      setName("");
-      setEmail("");
-      setPassword("");
+      if (data.meta.code == 200) {
+        toast.success("Đăng ký thành công.");
+        setName("");
+        setEmail("");
+        setPassword("");
+      } else {
+        toast.error(data.meta.message);
+      }
       setLoading(false);
     } catch (err) {
+      console.log(err);
       toast(err.response.data);
       setLoading(false);
     }
   };
 
-  return (
-    <>
-      <h1 className="jumbotron text-center bg-primary square">Register</h1>
+  return <>
+    <Head>
+      <title>Đăng ký</title>
+    </Head>
+    <h1 className="jumbotron text-center bg-primary square">Đăng ký</h1>
 
-      <div className="container col-md-4 offset-md-4 pb-5">
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            className="form-control mb-4 p-4"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter name"
-            required
-          />
+    <div className="container col-md-4 offset-md-4 pb-5">
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          className="form-control mb-4 p-4"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Tên người dùng"
+          required
+        />
 
-          <input
-            type="email"
-            className="form-control mb-4 p-4"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email"
-            required
-          />
+        <input
+          type="email"
+          className="form-control mb-4 p-4"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          required
+        />
 
-          <input
-            type="password"
-            className="form-control mb-4 p-4"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-            required
-          />
+        <input
+          type="password"
+          className="form-control mb-4 p-4"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Mật khẩu"
+          required
+        />
 
-          <button
-            type="submit"
-            style={{
-              "background-color": "#007bff",
-              "border-color": "#007bff" }}
-            className="btn btn-block btn-primary"
-            disabled={!name || !email || !password || loading}
-          >
-            {loading ? <SyncOutlined spin /> : "Submit"}
-          </button>
-        </form>
+        <button
+          type="submit"
+          style={{
+            background: "#007bff",
+            borderColor: "#007bff",
+            marginLeft: '28%'
+          }}
+          className="btn btn-block btn-primary"
+          disabled={!name || !email || !password || loading}
+        >
+          {loading ? <SyncOutlined spin /> : "Đăng ký"}
+        </button>
+      </form>
 
-        <p className="text-center p-3">
-          Already registered?{" "}
-          <Link href="/login">
-            <a>Login</a>
-          </Link>
-        </p>
-      </div>
-    </>
-  );
+      <p className="text-center p-3">
+        Đã có tài khoản?{" "}
+        <Link href="/login">Đăng nhập</Link>
+      </p>
+    </div>
+  </>
 };
 
 export default Register;

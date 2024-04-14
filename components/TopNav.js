@@ -1,12 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Menu } from "antd";
 import Link from "next/link";
-import {
-  AppstoreOutlined,
-  CoffeeOutlined,
-  LoginOutlined,
-  UserAddOutlined,
-} from "@ant-design/icons";
+import { AppstoreOutlined, LoginOutlined, ProfileOutlined, UserAddOutlined } from "@ant-design/icons";
 
 import { Context } from "../context";
 import axios from "axios";
@@ -29,86 +24,59 @@ const TopNav = () => {
   const logout = async () => {
     dispatch({ type: "LOGOUT" });
     window.localStorage.removeItem("user");
-    const { data } = await axios.get("/api/logout");
-    toast(data.message);
+    toast.success("Logout successfully!");
+    await axios.get("/api/logout");
     router.push("/login");
   };
 
-  return (
-    <Menu
-      theme="dark"
-      mode="horizontal"
-      selectedKeys={[current]}
-      className="mb-2"
-    >
+  return <Menu
+    theme="dark"
+    mode="horizontal"
+    selectedKeys={[current]}
+    className="mb-2">
+    <Item
+      key="/"
+      onClick={(e) => setCurrent(e.key)}
+      icon={<AppstoreOutlined />}>
+      <Link href="/"><a>App</a></Link>
+    </Item>
+
+    {user == null && <>
       <Item
-        key="/"
+        className="float-right"
+        key="/register"
         onClick={(e) => setCurrent(e.key)}
-        icon={<AppstoreOutlined />}
-      >
-        <Link href="/">
-          <a>App</a>
-        </Link>
+        icon={<UserAddOutlined />}>
+        <Link href="/register"><a>Đăng ký</a></Link>
       </Item>
 
-      {user === null && (
-        <>
-          <Item
-            className="float-right"
-            key="/register"
-            onClick={(e) => setCurrent(e.key)}
-            icon={<UserAddOutlined />}
-          >
-            <Link href="/register">
-              <a>Register</a>
-            </Link>
-          </Item>
+      <Item
+        className="float-right"
+        key="/login"
+        onClick={(e) => setCurrent(e.key)}
+        icon={<LoginOutlined />}>
+        <Link href="/login"><a>Đăng nhập</a></Link>
+      </Item>
+    </>}
 
-          <Item
-            className="float-right"
-            key="/login"
-            onClick={(e) => setCurrent(e.key)}
-            icon={<LoginOutlined />}
-          >
-            <Link href="/login">
-              <a>Login</a>
-            </Link>
-          </Item>
-        </>
-      )}
-
-      {user !== null && (
-        <SubMenu
-          icon={<CoffeeOutlined />}
-          title={user && user.data.name}
-          className="float-right"
-        >
-          <ItemGroup>
-            <Item key="/user">
-              <Link href="/user">
-                <a>Profile</a>
-              </Link>
-            </Item>
-            <Item onClick={logout}>Logout</Item>
-
-            <Item>
-        <Link href='/courses'>
-          <a>Courses</a>
-        </Link>
+    {user != null && <SubMenu
+      icon={<ProfileOutlined />}
+      title={user && user.data.name}
+      className="float-right">
+      <ItemGroup>
+        <Item key="/user">
+          <Link href="/user"><a>Hồ sơ</a></Link>
         </Item>
-        <Item>
-        <Link href='/leaderboard'>
-          <a>Leader Board</a>
-        </Link>
+        <Item onClick={logout}>Đăng xuất</Item>
+        <Item key={`/courses`}>
+          <Link href='/courses'><a>Khóa học</a></Link>
         </Item>
-          </ItemGroup>
-        </SubMenu>
-
-
-      )}
-
-    </Menu>
-  );
+        <Item key={`/leaderboard`}>
+          <Link href='/leaderboard'><a>Bảng xếp hạng</a></Link>
+        </Item>
+      </ItemGroup>
+    </SubMenu>}
+  </Menu>
 };
 
 export default TopNav;

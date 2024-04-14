@@ -8,15 +8,19 @@ const UserNav = () => {
     process.browser && setCurrent(window.location.pathname);
   }, [process.browser && window.location.pathname]);
 
-  return (
-    <div className="nav flex-column nav-pills">
-      <Link href="/user">
-        <a className={`nav-link ${current === "/user" && "active"}`}>
-          Profile
-        </a>
-      </Link>
-    </div>
-  );
+  return <div className="nav flex-column nav-pills">
+    <Link href="/user">
+      <a className={`nav-link ${current === "/user" ? "disabled" : "active"}`}>
+        Hồ sơ
+      </a>
+    </Link>
+
+    <Link href="/change-password">
+      <a className={`nav-link ${current === "/change-password" ? "disabled" : "active"}`}>
+        Mật khẩu
+      </a>
+    </Link>
+  </div>
 };
 
 export default UserNav;

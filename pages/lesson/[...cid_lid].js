@@ -108,7 +108,6 @@ const QuizContent = ({ quizData }) => {
    const match = quizData.match;
    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
    const [userAnswer, setUserAnswer] = useState("");
-   const [userSentenceAnswer, setUserSentenceAnswer] = useState([]);
    const [sentenceButtonStates, setSentenceButtonStates] = useState({});
    const [showResult, setShowResult] = useState(false);
    const [correct, setCorrect] = useState(0);
@@ -360,8 +359,9 @@ const QuizContent = ({ quizData }) => {
          correctAnswer = currentQuestion.correct
          return (
             <div style={{ position: 'relative', marginTop: '80px', display: 'flex', flexDirection: 'column', height: '650px' }}>
-               <p style={{ marginLeft: '475px', textAlign: 'left', fontSize: '32px', fontWeight: 'bold' }}>{"Chọn từ chính xác"}</p>
-               <p style={{ marginTop: '50px', textAlign: 'center', fontSize: '19px' }}>{`${currentQuestion.left_sentence} _____ ${currentQuestion.right_sentence}`}</p>
+               <p style={{ marginLeft: '475px', textAlign: 'left', fontSize: '32px', fontWeight: 'bold' }}>Chọn từ chính xác</p>
+               <p style={{ marginTop: '50px', textAlign: 'center', fontSize: '19px' }}>
+                  {`${currentQuestion.left_sentence} _____ ${currentQuestion.right_sentence}`}</p>
                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   {currentQuestion.answers.map((answer, index) => (
                      <button key={index} className={styles.answerButton} onClick={() => handleChoiceOptionSelect(answer)}>
@@ -410,13 +410,20 @@ const QuizContent = ({ quizData }) => {
          correctAnswer = currentQuestion.correct
          return (
             <div style={{ position: 'relative', marginTop: '80px', display: 'flex', flexDirection: 'column', height: '650px' }}>
-               <p style={{ marginLeft: '475px', textAlign: 'left', fontSize: '32px', fontWeight: 'bold' }}>{"Viết lại bằng tiếng Việt"}</p>
+               <p style={{ marginLeft: '475px', textAlign: 'left', fontSize: '32px', fontWeight: 'bold' }}>Viết lại câu</p>
                <p style={{ marginTop: '50px', textAlign: 'center', fontSize: '19px' }}>{currentQuestion.sentence}</p>
-               <div className='answerText' style={{ alignSelf: 'center', width: '60%', marginTop: '99px', display: 'flex', flexDirection: 'row', alignItems: 'center' }}></div>
-               <div style={{ alignSelf: 'center', width: '60%', marginTop: '1px', borderTop: '2px solid black', display: 'flex', flexDirection: 'row', alignItems: 'center' }}></div>
+               <div className='answerText' style={{
+                  alignSelf: 'center', width: '60%', marginTop: '99px',
+                  display: 'flex', flexDirection: 'row', alignItems: 'center'
+               }}></div>
+               <div style={{
+                  alignSelf: 'center', width: '60%', marginTop: '1px', borderTop: '2px solid black',
+                  display: 'flex', flexDirection: 'row', alignItems: 'center'
+               }}></div>
                <div style={{ marginTop: '60px', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                   {currentQuestion.words.map((answer, index) => (
-                     <button key={index} id={`button_${index}`} className={styles.sentenceButton} onClick={() => handleSentenceOptionSelect(answer, index, tmpState)}>
+                     <button key={index} id={`button_${index}`} className={styles.sentenceButton}
+                        onClick={() => handleSentenceOptionSelect(answer, index, tmpState)}>
                         {answer}
                      </button>
                   ))}
@@ -446,11 +453,9 @@ const QuizContent = ({ quizData }) => {
       if (!sentenceButtonStates[selectedOption]) {
          clickedButton.style.backgroundColor = '#e5e5e5';
          tmpState.add(`button_${index}`);
-         setUserSentenceAnswer(old => old.filter(o => o !== `button_${index}`));
       } else {
          tmpState.delete(`button_${index}`);
          clickedButton.style.backgroundColor = '#ffffff';
-         setUserSentenceAnswer(old => [...old, `button_${index}`]);
       }
       setSentenceButtonStates((prevStates) => ({
          ...prevStates,
