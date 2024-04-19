@@ -1,16 +1,10 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
-import { Context } from "../context";
 import axios from "axios";
 import parse from 'html-react-parser'
 import { toast } from "react-toastify";
 
-const AudioRecorder = ({ listeningChoices, readingChoices, writingAnswer }) => {
-   const {
-      state: { user },
-   } = useContext(Context);
-   const firstState = {
-      parts: []
-   }
+const AudioRecorder = ({ user, listenID, readingIDs, listeningChoices,
+   readingChoices, writingData, speakingData }) => {
    const [finalRecord, setFinalRecord] = useState(null);
    const mimeType = "audio/webm";
    const [permission, setPermission] = useState(false);
@@ -19,19 +13,6 @@ const AudioRecorder = ({ listeningChoices, readingChoices, writingAnswer }) => {
    const [stream, setStream] = useState(null);
    const [audioChunks, setAudioChunks] = useState([]);
    const [audio, setAudio] = useState(null);
-   const [data, setData] = useState(firstState);
-   useEffect(() => {
-      const getData = async () => {
-         if (user) {
-            const tmpData = (await axios.get(`/api/speaking/`)).data;
-            console.log('Data:', tmpData);
-            setData({
-               parts: tmpData
-            })
-         }
-      }
-      getData();
-   }, [user]);
    const startRecording = async () => {
       setRecordingStatus("recording");
       const media = new MediaRecorder(stream, { type: mimeType });
@@ -79,13 +60,13 @@ const AudioRecorder = ({ listeningChoices, readingChoices, writingAnswer }) => {
          <h3>PHẦN 4: NÓI - VSTEP SPEAKING</h3>
          <h5>Thời gian: 12 phút</h5>
          <h5>Số câu hỏi: 3</h5>
-         {data.parts.length != 0 && <div>
+         {speakingData.length != 0 && <div>
             <h5>Part 1: Social Interaction (3')</h5>
-            {parse(data.parts[0].text.replace(/\n/g, "<br>"))}<br /><br />
+            {parse(speakingData[0].text.replace(/\n/g, "<br>"))}<br /><br />
             <h5>Part 2: Solution Discussion (4')</h5>
-            {parse(data.parts[1].text.replace(/\n/g, "<br>"))}<br /><br />
+            {parse(speakingData[1].text.replace(/\n/g, "<br>"))}<br /><br />
             <h5>Part 3: Topic Development (5')</h5>
-            {parse(data.parts[2].text.replace(/\n/g, "<br>"))}<br /><br />
+            {parse(speakingData[2].text.replace(/\n/g, "<br>"))}<br /><br />
          </div>}
          <div style={{ marginBottom: '20px' }}>
             {!permission ? (
@@ -109,12 +90,35 @@ const AudioRecorder = ({ listeningChoices, readingChoices, writingAnswer }) => {
          <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center', width: '600px', margin: '0 auto' }}>
             <audio src={audio} controls></audio><br />
             <button onClick={async () => {
-               const result = (await axios.post('/api/speaking/upload', {
+               // console.log("Listening:", listeningChoices);
+               // console.log("Reading:", readingIDs);
+               // console.log("Reading:", readingChoices);
+               // TODO: FINISHED LISTENING
+               axios.post(`/api/reading/submit/`, {
+                  readingIDs: readingIDs,
+                  userID: user.data._id,
+                  choices: readingChoices
+               });
+               // TODO: FINISHED READING
+               axios.post(`/api/listen/submit/`, {
+                  listeningID: listenID,
+                  userID: user.data._id,
+                  choices: listeningChoices
+               });
+               // TODO: FINISHED WRITING
+               writingData.map(data => {
+                  axios.post(`/api/task/submit/`, {
+                     taskID: data._id,
+                     userID: user.data._id,
+                     content: data.answer
+                  })
+               })
+
+               axios.post('/api/speaking/upload', {
                   file: finalRecord,
                   userID: user.data._id,
-                  parts: data.parts.map(part => part._id)
-               })).data;
-               console.log(result);
+                  parts: speakingData.map(part => part._id)
+               });
                toast.success('Done!')
             }}>Submit Recording</button>
          </div>

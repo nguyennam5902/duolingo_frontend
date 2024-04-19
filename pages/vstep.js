@@ -14,35 +14,42 @@ const vstepIndex = () => {
    const {
       state: { user },
    } = useContext(Context);
-   const listenID = `65f6bbb28050d4be7b59f2e3`
-   const readingID = `65fd9077b48b9d6f6bc117f3`
-
    const firstState = {
       filename: "",
       listenQuestions: [],
-      readingData: {},
+      readingData: [],
+      writingData: [],
+      speakingData: []
    }
    const [current, setCurrent] = useState(0);
    const [data, setData] = useState(firstState);
-   const [listenChoice, setListenChoice] = useState([]);
-   const [readingChoice, setReadingChoice] = useState([]);
-   const [writingAnswer, setWritingAnswer] = useState("");
+   const [listenChoices, setListenChoices] = useState([]);
+   const [readingChoices, setReadingChoices] = useState([]);
+   const [writingAnswers, setWritingAnswer] = useState(["", ""]);
    const [loading, setLoading] = useState(true);
    useEffect(() => {
       const getData = async () => {
-         setLoading(true);
-         const listenData = (await axios.get(`/api/listen/${listenID}`)).data;
-         const readingData = (await axios.get(`/api/reading/${readingID}`)).data;
-
-         console.log("reading:", readingData.data.questions);
-         setData({
-            filename: listenData.filename,
-            listenQuestions: listenData.questions,
-            readingData: readingData.data
-         })
-         setListenChoice(Array(listenData.questions.length).fill(""))
-         setReadingChoice(Array(readingData.data.questions.length).fill(""))
-         setLoading(false);
+         if (user) {
+            setLoading(true);
+            const listenData = (await axios.get(`/api/listen/`)).data;
+            const readingData = (await axios.get(`/api/reading/`)).data;
+            const task = (await axios.get(`/api/tasks/`)).data;
+            const speakingData = (await axios.get(`/api/speaking/`)).data;
+            let readingLength = 0;
+            readingData.data.map(r => readingLength += r.questions.length)
+            // console.log("reading:", readingData.data.questions);
+            setData({
+               filename: listenData.filename,
+               listenQuestions: listenData.data.questions,
+               readingData: readingData.data,
+               writingData: task.data,
+               speakingData: speakingData
+            })
+            setListenChoices(Array(listenData.data.questions.length).fill(""))
+            setReadingChoices(Array(readingLength).fill(""))
+            setLoading(false);
+            console.log("TEST:", listenData);
+         }
       }
       getData()
    }, [user]);
@@ -97,23 +104,24 @@ const vstepIndex = () => {
                            {question.answers.map(answer => {
                               return <div>
                                  <input type="radio" name={`listen_${index}`} value={answer} onClick={() => {
-                                    const tmp = [...listenChoice.slice(0, index), answer, ...listenChoice.slice(index + 1)]
+                                    const tmp = [...listenChoices.slice(0, index), answer, ...listenChoices.slice(index + 1)]
                                     // console.log(tmp);
-                                    setListenChoice(tmp)
-                                 }} checked={listenChoice[index] == answer} />&nbsp;{answer}<br /><br />
+                                    setListenChoices(tmp)
+                                 }} checked={listenChoices[index] == answer} />&nbsp;{answer}<br /><br />
                               </div>
                            })}
+
                         </div>
                      })}
                      <button onClick={() => {
                         let allAnswer = true;
                         let correctCount = 0;
-                        for (let i = 0; i < listenChoice.length; i++) {
-                           if (listenChoice[i] == "") {
+                        for (let i = 0; i < listenChoices.length; i++) {
+                           if (listenChoices[i] == "") {
                               allAnswer = false;
                               break;
                            }
-                           if (listenChoice[i] == data.listenQuestions[i].correct) {
+                           if (listenChoices[i] == data.listenQuestions[i].correct) {
                               correctCount++;
                            }
                         }
@@ -130,33 +138,40 @@ const vstepIndex = () => {
                         <h5>Thời gian: 60 phút</h5>
                         <h5>Số câu hỏi: 40</h5>
                      </div>
-                     <h5>PASSAGE 1 - Questions 1-10</h5>
-                     <div style={{ width: '100%', fontSize: '16px' }}>
-                        {parse(data.readingData.text.replace(/\n/g, "<br>"))}<br /><br />
-                        {data.readingData.questions.map((q, index) => {
-                           return <div>
-                              <p>{`${index + 1}. ${q.question}`}</p>
-                              {q.answers.map(answer => {
+                     {data.readingData.map((reading, index) => {
+                        return <>
+                           <h5>PASSAGE {index + 1} - Questions {10 * index + 1}-{10 * index + 10}</h5>
+                           <div style={{ width: '100%', fontSize: '16px' }}>
+                              {parse(reading.text.replace(/\n/g, "<br>"))}<br /><br />
+                              {reading.questions.map((q, questionIndex) => {
                                  return <div>
-                                    <input type="radio" name={`reading_${index}`} value={answer} onClick={() => {
-                                       const tmp = [...readingChoice.slice(0, index), answer, ...readingChoice.slice(index + 1)]
-                                       setReadingChoice(tmp)
-                                    }} checked={readingChoice[index] == answer} />&nbsp;{answer}<br /><br />
+                                    <p>{`${10 * index + questionIndex + 1}. ${q.question}`}</p>
+                                    {q.answers.map(answer => {
+                                       return <div>
+                                          <input type="radio" name={`reading_${10 * index + questionIndex}`} value={answer} onClick={() => {
+                                             const tmp = [...readingChoices.slice(0, 10 * index + questionIndex), answer, ...readingChoices.slice(10 * index + questionIndex + 1)]
+                                             setReadingChoices(tmp)
+                                          }} checked={readingChoices[10 * index + questionIndex] == answer} />&nbsp;{answer}<br /><br />
+                                       </div>
+                                    })}
                                  </div>
                               })}
                            </div>
-                        })}
-                     </div>
+                        </>
+                     })}
                      <button onClick={() => {
                         let allAnswer = true;
                         let correctCount = 0;
-                        for (let i = 0; i < readingChoice.length; i++) {
-                           if (readingChoice[i] == "") {
-                              allAnswer = false;
-                              break;
-                           }
-                           if (readingChoice[i] == data.readingData.questions[i].correct) {
-                              correctCount++;
+                        for (let i = 0; i < data.readingData.length; i++) {
+                           const questions = data.readingData[i].questions;
+                           for (let j = 0; j < 10; j++) {
+                              if (readingChoices[10 * i + j] == "") {
+                                 allAnswer = false;
+                                 break;
+                              }
+                              if (readingChoices[10 * i + j] == questions[j].correct) {
+                                 correctCount++;
+                              }
                            }
                         }
                         if (allAnswer) {
@@ -167,11 +182,16 @@ const vstepIndex = () => {
                      }}>Submit</button>
                   </>}
                   {current == 2 && <>
-                     <WritingIndex text={writingAnswer} onChange={(e) => {
-                        setWritingAnswer(e.target.value);
-                     }} />
+                     <WritingIndex text={writingAnswers} onChange={(e, index) => {
+                        if (index == 0) {
+                           setWritingAnswer([e.target.value, writingAnswers[1]])
+                        }
+                        else {
+                           setWritingAnswer([writingAnswers[0], e.target.value])
+                        }
+                     }} writingData={data.writingData} />
                      <button onClick={(event) => {
-                        if (!writingAnswer || !writingAnswer.trim()) {
+                        if (!writingAnswers[0] || !writingAnswers[0].trim() || !writingAnswers[1] || !writingAnswers[1].trim()) {
                            event.preventDefault();
                            toast.error("Vui lòng nhập câu trả lời!");
                            return false;
@@ -179,8 +199,14 @@ const vstepIndex = () => {
                         setCurrent(current + 1)
                      }}>Submit</button>
                   </>}
-                  {current == 3 && <AudioRecorder listeningChoices={listenChoice}
-                     readingChoices={readingChoice} writingAnswer={writingAnswer} />}
+                  {current == 3 && <AudioRecorder speakingData={data.speakingData} user={user}
+                     readingIDs={data.readingData.map(r => r._id)} listeningChoices={listenChoices}
+                     readingChoices={readingChoices} writingData={data.writingData.map((obj, index) => {
+                        return {
+                           _id: obj._id,
+                           answer: writingAnswers[index]
+                        }
+                     })} />}
                </div>}
             </div>
          </div>
