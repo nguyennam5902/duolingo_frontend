@@ -10,11 +10,14 @@ import { Context } from "../context";
 import AudioRecorder from "../components/RecorderComponent";
 import WritingIndex from "../components/WritingComponent";
 
+let listeningCorrectCount = 0;
+let readingCorrectCount = 0;
 const vstepIndex = () => {
    const {
       state: { user },
    } = useContext(Context);
    const firstState = {
+      listenID: "",
       filename: "",
       listenQuestions: [],
       readingData: [],
@@ -39,6 +42,7 @@ const vstepIndex = () => {
             readingData.data.map(r => readingLength += r.questions.length)
             // console.log("reading:", readingData.data.questions);
             setData({
+               listenID: listenData.data._id,
                filename: listenData.filename,
                listenQuestions: listenData.data.questions,
                readingData: readingData.data,
@@ -62,7 +66,8 @@ const vstepIndex = () => {
          <div className="row">
             <div className="col-md-2">
                <div className="nav flex-column nav-pills">
-                  <button className={`nav-link ${current == 0 ? 'disabled' : 'active'}`} style={{ border: '1px solid black' }} onClick={() => setCurrent(0)}>
+                  <button className={`nav-link ${current == 0 ? 'disabled' : 'active'}`} style={{ border: '1px solid black' }}
+                     onClick={() => setCurrent(0)}>
                      Listening
                   </button>
                   <br />
@@ -74,7 +79,36 @@ const vstepIndex = () => {
                      Writing
                   </button>
                   <br />
-                  <button className={`nav-link ${current == 3 ? 'disabled' : 'active'}`} style={{ border: '1px solid black' }} onClick={() => setCurrent(3)}>
+                  <button className={`nav-link ${current == 3 ? 'disabled' : 'active'}`} style={{ border: '1px solid black' }}
+                     onClick={() => {
+                        let allAnswer = true;
+                        for (let i = 0; i < listenChoices.length; i++) {
+                           if (listenChoices[i] == "") {
+                              allAnswer = false;
+                              break;
+                           }
+                        }
+                        if (allAnswer) {
+                           for (let i = 0; i < data.readingData.length; i++) {
+                              for (let j = 0; j < 10; j++) {
+                                 if (readingChoices[10 * i + j] == "") {
+                                    allAnswer = false;
+                                    break;
+                                 }
+                              }
+                           }
+                        }
+                        if (allAnswer) {
+                           if (!writingAnswers[0] || !writingAnswers[0].trim() || !writingAnswers[1] || !writingAnswers[1].trim()) {
+                              allAnswer = false
+                           }
+                        }
+                        if (allAnswer) {
+                           setCurrent(3)
+                        } else {
+                           toast.error("Hãy trả lời tất cả câu hỏi")
+                        }
+                     }}>
                      Speaking
                   </button>
                </div>
@@ -98,37 +132,68 @@ const vstepIndex = () => {
                         header={<h3 style={{ color: 'white' }}>Part 1</h3>}
                      />
                      <h5>PART 1 - Questions 1-8</h5>
-                     {data.listenQuestions.map((question, index) => {
+                     {data.listenQuestions.slice(0, 8).map((question, index) => {
                         return <div>
-                           <p>{`${index + 1}. `}{question.question}</p>
+                           <p id={`listen_${index}`}>{`${index + 1}. `}{question.question}</p>
+                           <p>{question.correct}</p>
                            {question.answers.map(answer => {
                               return <div>
                                  <input type="radio" name={`listen_${index}`} value={answer} onClick={() => {
                                     const tmp = [...listenChoices.slice(0, index), answer, ...listenChoices.slice(index + 1)]
-                                    // console.log(tmp);
                                     setListenChoices(tmp)
                                  }} checked={listenChoices[index] == answer} />&nbsp;{answer}<br /><br />
                               </div>
                            })}
-
+                        </div>
+                     })}
+                     <h5>PART 2 - Questions 9-20</h5>
+                     {data.listenQuestions.slice(8, 20).map((question, index) => {
+                        return <div>
+                           <p id={`listen_${index + 8}`}>{`${index + 8 + 1}. `}{question.question}</p>
+                           <p>{question.correct}</p>
+                           {question.answers.map(answer => {
+                              return <div>
+                                 <input type="radio" name={`listen_${index + 8}`} value={answer} onClick={() => {
+                                    const tmp = [...listenChoices.slice(0, index + 8), answer, ...listenChoices.slice(index + 1 + 8)]
+                                    setListenChoices(tmp)
+                                 }} checked={listenChoices[index + 8] == answer} />&nbsp;{answer}<br /><br />
+                              </div>
+                           })}
+                        </div>
+                     })}
+                     <h5>PART 3 - Questions 21-35</h5>
+                     {data.listenQuestions.slice(20, 36).map((question, index) => {
+                        return <div>
+                           <p id={`listen_${index + 20}`}>{`${index + 20 + 1}. `}{question.question}</p>
+                           <p>{question.correct}</p>
+                           {question.answers.map(answer => {
+                              return <div>
+                                 <input type="radio" name={`listen_${index + 20}`} value={answer} onClick={() => {
+                                    const tmp = [...listenChoices.slice(0, index + 20), answer, ...listenChoices.slice(index + 1 + 20)]
+                                    setListenChoices(tmp)
+                                 }} checked={listenChoices[index + 20] == answer} />&nbsp;{answer}<br /><br />
+                              </div>
+                           })}
                         </div>
                      })}
                      <button onClick={() => {
-                        let allAnswer = true;
-                        let correctCount = 0;
-                        for (let i = 0; i < listenChoices.length; i++) {
+                        listeningCorrectCount = 0
+                        let allAnswer = true, i = 0
+                        for (i = 0; i < listenChoices.length; i++) {
                            if (listenChoices[i] == "") {
                               allAnswer = false;
                               break;
                            }
                            if (listenChoices[i] == data.listenQuestions[i].correct) {
-                              correctCount++;
+                              listeningCorrectCount++;
                            }
                         }
                         if (allAnswer) {
                            setCurrent(current + 1);
+                           toast.success(`lcc:${listeningCorrectCount}`)
                         } else {
-                           toast.error(`Hãy trả lời tất cả câu hỏi`)
+                           document.getElementById(`listen_${i}`).scrollIntoView({ behavior: 'smooth' })
+                           toast.error(`Hãy trả lời câu hỏi ${i + 1}`)
                         }
                      }}>Submit</button>
                   </>}
@@ -145,7 +210,8 @@ const vstepIndex = () => {
                               {parse(reading.text.replace(/\n/g, "<br>"))}<br /><br />
                               {reading.questions.map((q, questionIndex) => {
                                  return <div>
-                                    <p>{`${10 * index + questionIndex + 1}. ${q.question}`}</p>
+                                    <p id={`reading_${10 * index + questionIndex}`}>{`${10 * index + questionIndex + 1}. ${q.question}`}</p>
+                                    <p>{q.correct}</p>
                                     {q.answers.map(answer => {
                                        return <div>
                                           <input type="radio" name={`reading_${10 * index + questionIndex}`} value={answer} onClick={() => {
@@ -160,24 +226,29 @@ const vstepIndex = () => {
                         </>
                      })}
                      <button onClick={() => {
-                        let allAnswer = true;
-                        let correctCount = 0;
-                        for (let i = 0; i < data.readingData.length; i++) {
+                        readingCorrectCount = 0;
+                        let allAnswer = true, i = 0, j = 0, errI = 0
+                        for (i = 0; i < data.readingData.length; i++) {
                            const questions = data.readingData[i].questions;
-                           for (let j = 0; j < 10; j++) {
+                           for (j = 0; j < 10; j++) {
                               if (readingChoices[10 * i + j] == "") {
                                  allAnswer = false;
+                                 errI = i
+                                 i = data.readingData.length
                                  break;
                               }
                               if (readingChoices[10 * i + j] == questions[j].correct) {
-                                 correctCount++;
+                                 readingCorrectCount++;
                               }
                            }
                         }
                         if (allAnswer) {
                            setCurrent(current + 1)
+                           // toast.success(`lcc:${listeningCorrectCount}`)
+                           // toast.success(`rcc:${readingCorrectCount}`)
                         } else {
-                           toast.error(`Hãy trả lời tất cả câu hỏi`)
+                           document.getElementById(`reading_${10 * errI + j}`).scrollIntoView({ behavior: 'smooth' })
+                           toast.error(`Hãy trả lời câu hỏi ${10 * errI + j + 1}`)
                         }
                      }}>Submit</button>
                   </>}
@@ -199,9 +270,10 @@ const vstepIndex = () => {
                         setCurrent(current + 1)
                      }}>Submit</button>
                   </>}
-                  {current == 3 && <AudioRecorder speakingData={data.speakingData} user={user}
-                     readingIDs={data.readingData.map(r => r._id)} listeningChoices={listenChoices}
-                     readingChoices={readingChoices} writingData={data.writingData.map((obj, index) => {
+                  {current == 3 && <AudioRecorder listeningCorrectCount={listeningCorrectCount} readingCorrectCount={readingCorrectCount}
+                     listenID={data.listenID} speakingData={data.speakingData} user={user} readingIDs={data.readingData.map(r => r._id)}
+                     listeningChoices={listenChoices} readingChoices={readingChoices}
+                     writingData={data.writingData.map((obj, index) => {
                         return {
                            _id: obj._id,
                            answer: writingAnswers[index]
@@ -211,13 +283,6 @@ const vstepIndex = () => {
             </div>
          </div>
       </div>
-      <footer>
-         <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center' }}>
-            <h1>This is the footer</h1>
-            <h1>This is the footer</h1>
-            <h1>This is the footer</h1>
-         </div>
-      </footer>
    </>
 }
 export default vstepIndex;

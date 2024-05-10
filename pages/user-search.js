@@ -49,11 +49,7 @@ const UserSearch = () => {
          setClicked(true);
          setLoading(true);
          const data = (await axios.get(`api/user/search/${input}`)).data;
-         // console.log("user:", user);
-         // console.log(data);
-         // console.log(userData);
          const s = data.data.map(user => (userData._id != user._id && !userData.following.map(_ => _._id).includes(user._id)))
-         console.log("FOLLOW", s);
          setFollowArr(s);
          setUsers(data.data);
          setLoading(false);
@@ -118,8 +114,8 @@ const UserSearch = () => {
                   }} src={`/api/image/${user._id}`}></img></a>
                <a href={`/user/${user._id}`} style={{
                   color: 'black', marginLeft: '4%', fontSize: '24px', fontWeight: 'bold'
-               }}>{user.name}</a>
-               {followArr[index] && <FollowButton text='Follow' firstState={followArr[index]} userID={mainUser.data._id}
+               }}>{user.name.length > 17 ? `${user.name.slice(0, 18)}...` : user.name}</a>
+               {followArr[index] && mainUser && <FollowButton text='Follow' firstState={followArr[index]} userID={mainUser.data._id}
                   friendID={user._id} />}</div>)}
          </div>
       </div>

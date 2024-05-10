@@ -3,7 +3,7 @@ import axios from "axios";
 import parse from 'html-react-parser'
 import { toast } from "react-toastify";
 
-const AudioRecorder = ({ user, listenID, readingIDs, listeningChoices,
+const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, listenID, readingIDs, listeningChoices,
    readingChoices, writingData, speakingData }) => {
    const [finalRecord, setFinalRecord] = useState(null);
    const mimeType = "audio/webm";
@@ -86,43 +86,48 @@ const AudioRecorder = ({ user, listenID, readingIDs, listeningChoices,
             ) : null}
          </div>
       </div>
-      {audio ? (
-         <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center', width: '600px', margin: '0 auto' }}>
-            <audio src={audio} controls></audio><br />
-            <button onClick={async () => {
-               // console.log("Listening:", listeningChoices);
-               // console.log("Reading:", readingIDs);
-               // console.log("Reading:", readingChoices);
-               // TODO: FINISHED LISTENING
-               axios.post(`/api/reading/submit/`, {
-                  readingIDs: readingIDs,
-                  userID: user.data._id,
-                  choices: readingChoices
-               });
-               // TODO: FINISHED READING
-               axios.post(`/api/listen/submit/`, {
-                  listeningID: listenID,
-                  userID: user.data._id,
-                  choices: listeningChoices
-               });
-               // TODO: FINISHED WRITING
-               writingData.map(data => {
-                  axios.post(`/api/task/submit/`, {
-                     taskID: data._id,
-                     userID: user.data._id,
-                     content: data.answer
-                  })
-               })
-
-               axios.post('/api/speaking/upload', {
-                  file: finalRecord,
-                  userID: user.data._id,
-                  parts: speakingData.map(part => part._id)
-               });
-               toast.success('Done!')
-            }}>Submit Recording</button>
-         </div>
-      ) : null}
+      {audio ? <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center', width: '600px', margin: '0 auto' }}>
+         <audio src={audio} controls></audio><br />
+         <button onClick={async () => {
+            // TODO: FINISHED LISTENING
+            const readingAnswerID = (await axios.post(`/api/reading/submit/`, {
+               readingIDs: readingIDs,
+               userID: user.data._id,
+               choices: readingChoices,
+               score: readingCorrectCount
+            })).data
+            // TODO: FINISHED READING
+            const listeningAnswerID = (await axios.post(`/api/listen/submit/`, {
+               listeningID: listenID,
+               userID: user.data._id,
+               choices: listeningChoices,
+               score: listeningCorrectCount
+            })).data
+            // TODO: FINISHED WRITING
+            const taskAnswerID = (await Promise.all([...writingData].map(data => axios.post(`/api/task/submit/`, {
+               taskID: data._id,
+               userID: user.data._id,
+               content: data.answer
+            })))).map(task => task.data.data)
+            const speakingAnswerID = (await axios.post('/api/speaking/upload', {
+               file: finalRecord,
+               userID: user.data._id,
+               parts: speakingData.map(part => part._id)
+            })).data
+            console.log("LISTENING:", listeningAnswerID.data);
+            console.log("READING:", readingAnswerID.data);
+            console.log("WRITING:", taskAnswerID);
+            console.log("SPEAKING:", speakingAnswerID.data);
+            axios.post('/api/test', {
+               listeningAnswerID: listeningAnswerID.data,
+               readingAnswerID: readingAnswerID.data,
+               taskAnswerID: taskAnswerID,
+               speakingAnswerID: speakingAnswerID.data,
+               userID: user.data._id
+            })
+            toast.success('Done!')
+         }}>Submit Recording</button>
+      </div> : null}
    </>
 };
 export default AudioRecorder;

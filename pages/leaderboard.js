@@ -14,7 +14,7 @@ const LeaderBoard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/leaderboard?size=5`);
+        const response = await fetch(`/api/leaderboard?size=5`);
         const data = await response.json();
         // console.log("Response: " + data.data[0]._id)
         setUsers(data.data);
@@ -72,9 +72,9 @@ const LeaderBoard = () => {
             }}>
             <li key={user._id} className="list-group-item d-flex">
               <div style={{ width: '70px' }}>
-                {index < 3 ?
-                  <img src={`https://d35aaqx5ub95lt.cloudfront.net/images/leagues/${imageID[index]}.svg`} ></img> :
-                  <p>&nbsp;&nbsp;&nbsp;{index + 1}</p>}
+                {currentPage * 5 + index < 3 ?
+                  <img src={`https://d35aaqx5ub95lt.cloudfront.net/images/leagues/${imageID[index]}.svg`}></img> :
+                  <p>&nbsp;&nbsp;&nbsp;{currentPage * 5 + index + 1}</p>}
               </div>
               <img style={{
                 borderRadius: '50%',

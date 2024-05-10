@@ -74,6 +74,16 @@ const TopNav = () => {
         <Item key={`/leaderboard`}>
           <Link href='/leaderboard'><a>Bảng xếp hạng</a></Link>
         </Item>
+        {String(user.data.email).endsWith(`@hust.edu.vn`) ? <Item key={`/scoring`}>
+          <Link href='/scoring'><a>Chấm điểm</a></Link>
+        </Item> : <>
+          <Item key={`/vstep`}>
+            <Link href='/vstep'><a>Thi thử VSTEP</a></Link>
+          </Item>
+          <Item key={`/view-test`}>
+            <Link href='/view-test'><a>Xem điểm thi VSTEP</a></Link>
+          </Item>
+        </>}
       </ItemGroup>
     </SubMenu>}
   </Menu>
