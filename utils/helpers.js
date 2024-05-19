@@ -1,14 +1,16 @@
-// data { currency: '', amount: ''}
-export const currencyFormatter = (data) => {
-  return ((data.amount * 100) / 100).toLocaleString(data.currency, {
-    style: "currency",
-    currency: data.currency,
-  });
-};
+import { formatDistance } from 'date-fns';
+import { vi } from 'date-fns/locale'
 
-export const stripeCurrencyFormatter = (data) => {
-  return (data.amount / 100).toLocaleString(data.currency, {
-    style: "currency",
-    currency: data.currency,
-  });
-};
+/**
+ * Get time distance between `timestamp` and the current date 
+ * @param {string} timestamp ISO timestamp string
+ * @returns Time distance between `timestamp` and the current date
+ */
+const getTimeDistance = (timestamp) => {
+   const baseDate = new Date();
+   const date = new Date(timestamp);
+   return formatDistance(date, baseDate, { locale: vi, addSuffix: true })
+}
+export {
+   getTimeDistance
+}

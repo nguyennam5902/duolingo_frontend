@@ -1,5 +1,5 @@
 import parse from 'html-react-parser'
-
+import AutoExpandingTextarea from './AutoExpandingTextarea'
 const WritingIndex = ({ text, onChange, writingData }) => {
    const countWords = (input) => {
       const str = String(input).trim();
@@ -20,9 +20,8 @@ const WritingIndex = ({ text, onChange, writingData }) => {
                   <h5>Task {index + 1}</h5>
                   <p>{parse(task.text.replace(/\n/g, "<br>"))}</p>
                   <h2>Your answer</h2>
-                  <textarea defaultValue={text[index]} onChange={e => onChange(e, index)} style={{
-                     width: '100%'
-                  }}></textarea>
+                  <AutoExpandingTextarea defaultValue={text[index]} onChange={e => onChange(e, index)}
+                     style={{ width: '100%' }} />
                   <p>Number of words: {countWords(text[index])}</p>
                </>
             })}

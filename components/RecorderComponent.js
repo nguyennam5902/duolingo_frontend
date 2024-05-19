@@ -1,7 +1,19 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import parse from 'html-react-parser'
-import { toast } from "react-toastify";
+import { toast } from "react-toastify"
+
+function secondsToTimeFormat(totalSeconds) {
+   const hours = Math.floor(totalSeconds / 3600);
+   const minutes = Math.floor((totalSeconds % 3600) / 60);
+   const seconds = totalSeconds % 60;
+
+   const formattedHours = String(hours).padStart(2, '0');
+   const formattedMinutes = String(minutes).padStart(2, '0');
+   const formattedSeconds = String(seconds).padStart(2, '0');
+
+   return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+}
 
 const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, listenID, readingIDs, listeningChoices,
    readingChoices, writingData, speakingData }) => {
@@ -13,7 +25,24 @@ const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, liste
    const [stream, setStream] = useState(null);
    const [audioChunks, setAudioChunks] = useState([]);
    const [audio, setAudio] = useState(null);
+   const [seconds, setSeconds] = useState(0)
+   const [isRunning, setIsRunning] = useState(false);
+   useEffect(() => {
+      let interval;
+      if (isRunning) {
+         interval = setInterval(() => {
+            setSeconds(prevSeconds => prevSeconds + 1);
+         }, 1000);
+      } else if (!isRunning && seconds !== 0) {
+         clearInterval(interval);
+      }
+
+      return () => clearInterval(interval);
+   }, [isRunning, seconds]);
+
    const startRecording = async () => {
+      setSeconds(0);
+      setIsRunning(true)
       setRecordingStatus("recording");
       const media = new MediaRecorder(stream, { type: mimeType });
       mediaRecorder.current = media;
@@ -27,6 +56,7 @@ const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, liste
       setAudioChunks(localAudioChunks);
    };
    const stopRecording = () => {
+      setIsRunning(false)
       setRecordingStatus("inactive");
       mediaRecorder.current.stop();
       mediaRecorder.current.onstop = async () => {
@@ -38,6 +68,7 @@ const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, liste
          setAudioChunks([]);
       };
    };
+   const formattedTime = secondsToTimeFormat(seconds);
 
    const getMicrophonePermission = async () => {
       if ("MediaRecorder" in window) {
@@ -79,13 +110,18 @@ const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, liste
                   Start Recording
                </button>
             ) : null}
-            {recordingStatus === "recording" ? (
+            {recordingStatus === "recording" ? <>
                <button onClick={stopRecording} type="button">
                   Stop Recording
                </button>
-            ) : null}
+            </> : null}
          </div>
       </div>
+      <div style={{
+         border: '5px solid black', width: '14%', alignItems: 'center', margin: '0 auto',
+         textAlign: 'center', fontSize: '25px'
+      }}><b>{formattedTime}</b></div>
+      <br />
       {audio ? <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center', width: '600px', margin: '0 auto' }}>
          <audio src={audio} controls></audio><br />
          <button onClick={async () => {
@@ -114,10 +150,10 @@ const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, liste
                userID: user.data._id,
                parts: speakingData.map(part => part._id)
             })).data
-            console.log("LISTENING:", listeningAnswerID.data);
-            console.log("READING:", readingAnswerID.data);
-            console.log("WRITING:", taskAnswerID);
-            console.log("SPEAKING:", speakingAnswerID.data);
+            // console.log("LISTENING:", listeningAnswerID.data);
+            // console.log("READING:", readingAnswerID.data);
+            // console.log("WRITING:", taskAnswerID);
+            // console.log("SPEAKING:", speakingAnswerID.data);
             axios.post('/api/test', {
                listeningAnswerID: listeningAnswerID.data,
                readingAnswerID: readingAnswerID.data,

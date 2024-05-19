@@ -93,11 +93,11 @@ const LeaderBoard = () => {
       ))}
     </ul>
     <div className="mt-4 mr-4 ml-4 mb-5 d-flex justify-content-between align-items-center">
-      <button className="btn" onClick={() => handlePageChange(currentPage - 1)}>Previous Page</button>
+      <button className="btn" style={{ border: '1px solid black' }} onClick={() => handlePageChange(currentPage - 1)}>Previous Page</button>
       <p>
         Page {currentPage + 1} of {totalPages}, Total Users: {totalUsers}
       </p>
-      <button className="btn" onClick={() => handlePageChange(currentPage + 1)}>Next Page</button>
+      <button className="btn" style={{ border: '1px solid black' }} onClick={() => handlePageChange(currentPage + 1)}>Next Page</button>
     </div>
   </>
 };

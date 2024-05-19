@@ -16,7 +16,6 @@ const pageIndex = () => {
    const firstState = {
       userID: "",
       parts: [],
-      answer: "",
       score: -1
    }
    const router = useRouter();
@@ -31,7 +30,6 @@ const pageIndex = () => {
             setData({
                userID: data.userID,
                parts: data.speakingID,
-               answer: data.answer,
                score: data.score
             })
             setLoading(false)

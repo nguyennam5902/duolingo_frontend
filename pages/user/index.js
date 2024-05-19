@@ -11,7 +11,7 @@ const UserIndex = () => {
   const {
     state: { user },
   } = useContext(Context);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const firstState = {
     point: 0,
     following: [],
@@ -61,7 +61,7 @@ const UserIndex = () => {
       <div className="row">
         <div className="col-md-8">
           <div className="card">
-            <img src={`/api/image/${user && user.data._id}`} alt="Person" className="card__image" />
+            {!loading && <img src={`/api/image/${user.data._id}`} alt="Person" className="card__image" />}
             <a href='/image-choose'>
               <button style={{
                 marginTop: '4%',

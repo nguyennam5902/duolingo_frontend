@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { SyncOutlined } from "@ant-design/icons";
 import { useRouter } from 'next/router'
+import { getTimeDistance } from '../utils/helpers'
+import { formatISO9075 } from 'date-fns';
 
 const Scoring = () => {
    const router = useRouter();
@@ -37,9 +39,9 @@ const Scoring = () => {
 
    return <>
       <Head>
-         <title>Scoring</title>
+         <title>Chấm điểm</title>
       </Head>
-      <h1 className="jumbotron text-center square">Scoring</h1>
+      <h1 className="jumbotron text-center square">Chấm điểm</h1>
       <div className="container-fluid">
          <div className="row">
             <div className="col-md-2">
@@ -87,7 +89,7 @@ const Scoring = () => {
                      })
                      setLoading(false);
                   }}>
-                     Search Student
+                     Tìm kiếm
                   </button>
                   <br />
                   {loading && <SyncOutlined spin
@@ -100,77 +102,69 @@ const Scoring = () => {
                   }}>{<tbody>
                      {current == 0 && <>
                         <tr>
-                           <td style={cellStyle}>Index</td>
-                           <td style={cellStyle}>Listening filename</td>
-                           <td style={cellStyle}>Date and time</td>
-                           <td style={cellStyle}>Action</td>
+                           <td style={cellStyle}>STT</td>
+                           <td style={cellStyle}>Tên file nghe</td>
+                           <td style={cellStyle}>Ngày và giờ</td>
+                           <td style={cellStyle}>Thao tác</td>
                         </tr>
-                        {data.l?.map((tmp, index) => {
-                           return <tr>
-                              <td style={cellStyle}>{index + 1}</td>
-                              <td style={cellStyle}>{tmp.listeningID.fileID}</td>
-                              <td style={cellStyle}>{new Date(new Date(tmp.createdAt).getTime() + 7 * 60 * 60 * 1000).toISOString()}</td>
-                              <td><a href={`/listening-scoring/${tmp._id}`}><button style={{ width: '100%', color: 'green' }}>View</button></a></td>
-                           </tr>
-                        })}
+                        {data.l?.map((tmp, index) => <tr>
+                           <td style={cellStyle}>{index + 1}</td>
+                           <td style={cellStyle}>{tmp.listeningID.filename}</td>
+                           <td title={formatISO9075(tmp.createdAt)} style={cellStyle}>{getTimeDistance(tmp.createdAt)}</td>
+                           <td style={cellStyle}><a href={`/listening-scoring/${tmp._id}`}><button style={{ width: '100%', color: 'green' }}>Xem</button></a></td>
+                        </tr>)}
                      </>}
                      {current == 1 && <>
                         <tr>
-                           <td style={cellStyle}>Index</td>
-                           <td style={cellStyle}>Accurate</td>
-                           <td style={cellStyle}>Date and time</td>
-                           <td style={cellStyle}>Action</td>
+                           <td style={cellStyle}>STT</td>
+                           <td style={cellStyle}>Điểm</td>
+                           <td style={cellStyle}>Ngày và giờ</td>
+                           <td style={cellStyle}>Thao tác</td>
                         </tr>
-                        {data.r?.map((tmp, index) => {
-                           return <tr>
-                              <td style={cellStyle}>{index + 1}</td>
-                              <td style={cellStyle}>{tmp.score == -1 ? "-" : `${tmp.score} / 20`}</td>
-                              <td style={cellStyle}>{new Date(new Date(tmp.createdAt).getTime() + 7 * 60 * 60 * 1000).toISOString()}</td>
-                              <td><a href={`/reading-scoring/${tmp._id}`}><button style={{ width: '100%', color: 'green' }}>View</button></a></td>
-                           </tr>
-                        })}
+                        {data.r?.map((tmp, index) => <tr>
+                           <td style={cellStyle}>{index + 1}</td>
+                           <td style={cellStyle}>{tmp.score == -1 ? "-" : `${tmp.score} / 20`}</td>
+                           <td title={formatISO9075(tmp.createdAt)} style={cellStyle}>{getTimeDistance(tmp.createdAt)}</td>
+                           <td style={cellStyle}><a href={`/reading-scoring/${tmp._id}`}><button style={{ width: '100%', color: 'green' }}>Xem</button></a></td>
+                        </tr>)}
                      </>}
                      {current == 2 && <>
                         <tr>
-                           <td style={cellStyle}>Index</td>
-                           <td style={cellStyle}>Task type</td>
-                           <td style={cellStyle}>Date and time</td>
-                           <td style={cellStyle}>Action</td>
+                           <td style={cellStyle}>STT</td>
+                           <td style={cellStyle}>Bài viết</td>
+                           <td style={cellStyle}>Ngày và giờ</td>
+                           <td style={cellStyle}>Thao tác</td>
                         </tr>
-                        {data.w?.map((tmp, index) => {
-                           return <tr>
-                              <td style={cellStyle}>{index + 1}</td>
-                              <td style={cellStyle}>{tmp.taskID.type}</td>
-                              <td style={cellStyle}>{new Date(new Date(tmp.createdAt).getTime() + 7 * 60 * 60 * 1000).toISOString()}</td>
-                              <td>
-                                 <a href={`/writing-scoring/${tmp._id}`}>
-                                    <button style={{ width: '100%', color: tmp.score == -1 ? "red" : "green" }}>
-                                       {tmp.score == -1 ? "Scoring" : "View"}
-                                    </button>
-                                 </a>
-                              </td>
-                           </tr>
-                        })}
+                        {data.w?.map((tmp, index) => <tr>
+                           <td style={cellStyle}>{index + 1}</td>
+                           <td style={cellStyle}>{tmp.taskID.type}</td>
+                           <td title={formatISO9075(tmp.createdAt)} style={cellStyle}>{getTimeDistance(tmp.createdAt)}</td>
+                           <td style={cellStyle}>
+                              <a href={`/writing-scoring/${tmp._id}`}>
+                                 <button style={{ width: '100%', color: tmp.score == -1 ? "red" : "green" }}>
+                                    {tmp.score == -1 ? "Chấm" : "Xem"}
+                                 </button>
+                              </a>
+                           </td>
+                        </tr>)}
                      </>}
                      {current == 3 && <>
                         <tr>
-                           <td style={cellStyle}>Index</td>
-                           <td style={cellStyle}>Part</td>
-                           <td style={cellStyle}>Date and time</td>
-                           <td style={cellStyle}>Action</td>
+                           <td style={cellStyle}>STT</td>
+                           <td style={cellStyle}>ID</td>
+                           <td style={cellStyle}>Ngày và giờ</td>
+                           <td style={cellStyle}>Thao tác</td>
                         </tr>
-                        {data.s?.map((tmp, index) => {
-                           return <tr>
-                              <td style={cellStyle}>{index + 1}</td>
-                              <td style={cellStyle}>{tmp._id}</td>
-                              <td style={cellStyle}>{new Date(new Date(tmp.createdAt).getTime() + 7 * 60 * 60 * 1000).toISOString()}</td>
-                              <td><a href={`/speaking-scoring/${tmp._id}`}>
-                                 <button style={{ width: '100%', color: tmp.score == -1 ? "red" : "green" }}>
-                                    {tmp.score == -1 ? "Scoring" : "View"}
-                                 </button>
-                              </a></td>
-                           </tr>
-                        })}
+                        {data.s?.map((tmp, index) => <tr>
+                           <td style={cellStyle}>{index + 1}</td>
+                           <td style={cellStyle}>{tmp._id}</td>
+                           <td title={formatISO9075(tmp.createdAt)} style={cellStyle}>{getTimeDistance(tmp.createdAt)}</td>
+                           <td style={cellStyle}><a href={`/speaking-scoring/${tmp._id}`}>
+                              <button style={{ width: '100%', color: tmp.score == -1 ? "red" : "green" }}>
+                                 {tmp.score == -1 ? "Chấm" : "Xem"}
+                              </button>
+                           </a></td>
+                        </tr>)}
                      </>}
                   </tbody>}
                   </table>}
