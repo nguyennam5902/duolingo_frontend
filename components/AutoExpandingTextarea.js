@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 
-function AutoExpandingTextarea({ defaultValue, style,onChange }) {
+function AutoExpandingTextarea({ defaultValue, style = { width: '100%' }, onChange, disabled = false }) {
    const textareaRef = useRef(null);
-   
+
    const adjustHeight = () => {
       const textarea = textareaRef.current;
       if (textarea) {
@@ -17,6 +17,7 @@ function AutoExpandingTextarea({ defaultValue, style,onChange }) {
 
    return (
       <textarea
+         disabled={disabled}
          ref={textareaRef}
          defaultValue={defaultValue}
          style={{ ...style, overflow: 'hidden' }} // Hide the scrollbar

@@ -45,7 +45,7 @@ const UserIndex = () => {
       if (userID) {
         setLoading(true);
         const mainData = (await axios.get(`/api/user/${JSON.parse(localStorage.user).data._id}`)).data;
-        console.log("MAIN:", mainData);
+        // console.log("MAIN:", mainData);
         setUserData({
           followers: mainData.data.followers,
           following: mainData.data.following
@@ -69,7 +69,7 @@ const UserIndex = () => {
         setLoading(false);
       }
     } catch (err) {
-      console.log(err);
+      console.log("ERROR:", err);
       setLoading(false);
     }
   };

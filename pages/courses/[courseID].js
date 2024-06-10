@@ -71,10 +71,10 @@ const Course = () => {
       const element = <div className={styles.courseBox} key={property.ids[index]}
          style={{ background: isLearned ? '#FFC800' : '#89E219' }}>
          <div className={styles.lessonLink}>
-            <p>{title}</p>
+            <p style={{ marginRight: '300px', width: '200px' }}>{title}</p>
             <a href={`/lesson/${property.courseID}/${property.ids[index]}`}>
                <button style={{
-                  width: '120px', height: '30px', position: 'absolute', right: '2%',
+                  width: '120px', height: '30px', right: '2%',
                   color: isLearned ? '#FFC800' : '#89E219', background: '#ffffff', border: 'none'
                }}>
                   <strong>{isLearned ? 'Luyện tập' : 'Học'}</strong>
@@ -84,30 +84,31 @@ const Course = () => {
       </div>
       map.set(property.ids[index], element);
    })
-   return (
-      <React.Fragment>
-         <Head>
-            <title>Lessons</title>
-         </Head>
-         <h1 className="jumbotron text-center bg-primary square">
-            Online Learning English: Lessons
-         </h1>
-         {property.parts.map(part => <div>
-            <div style={{
-               border: '10px solid #fff',
-               paddingLeft: '10px',
-               paddingTop: '5px',
-               height: '100px',
-               backgroundColor: '#00CD9C'
-            }}>
-               <h1 style={{ fontSize: '25px', color: '#ffffff' }}>{part.title}</h1>
-               <p style={{ fontSize: '19px', color: '#ffffff' }}>{part.description}</p>
-            </div>
-            {part.lessons.map(lesson => map.get(lesson))}
+   return <>
+      <Head>
+         <title>Lessons</title>
+      </Head>
+      <h1 className="jumbotron text-center bg-primary square">
+         Online Learning English: Lessons
+      </h1>
+      {property.parts.map(part => <div>
+         <div style={{
+            border: '10px solid #fff',
+            paddingLeft: '10px',
+            paddingTop: '5px',
+            height: '100px',
+            backgroundColor: '#00CD9C',
+            width: '55%',
+            display: "flex", flexDirection: 'column', alignItems: 'center', margin: '0 auto'
+         }}>
+            <h1 style={{ fontSize: '25px', color: '#ffffff' }}>{part.title}</h1>
+            <p style={{ fontSize: '19px', color: '#ffffff' }}>{part.description}</p>
          </div>
-         )}
-         &nbsp;
-      </React.Fragment >
-   );
+         {part.lessons.map(lesson => map.get(lesson))}
+      </div>
+      )}
+
+      &nbsp;
+   </ >
 }
 export default Course;

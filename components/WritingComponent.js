@@ -20,8 +20,7 @@ const WritingIndex = ({ text, onChange, writingData }) => {
                   <h5>Task {index + 1}</h5>
                   <p>{parse(task.text.replace(/\n/g, "<br>"))}</p>
                   <h2>Your answer</h2>
-                  <AutoExpandingTextarea defaultValue={text[index]} onChange={e => onChange(e, index)}
-                     style={{ width: '100%' }} />
+                  <AutoExpandingTextarea defaultValue={text[index]} onChange={e => onChange(e, index)} />
                   <p>Number of words: {countWords(text[index])}</p>
                </>
             })}

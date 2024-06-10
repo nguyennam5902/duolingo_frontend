@@ -52,7 +52,7 @@ const vstepIndex = () => {
             setListenChoices(Array(listenData.data.questions.length).fill(""))
             setReadingChoices(Array(readingLength).fill(""))
             setLoading(false);
-            console.log("TEST:", listenData);
+            // console.log("TEST:", listenData);
          }
       }
       getData()
@@ -124,58 +124,43 @@ const vstepIndex = () => {
                      </div>
                      <AudioPlayer
                         src={`/api/audio/${data.filename}`}
-                        onPlay={_e => console.log("onPlay")}
-                        style={{
-                           width: '100%'
-                        }}
+                        style={{ width: '100%' }}
                         showJumpControls={false}
                         header={<h3 style={{ color: 'white' }}>Part 1</h3>}
                      />
                      <h5>PART 1 - Questions 1-8</h5>
-                     {data.listenQuestions.slice(0, 8).map((question, index) => {
-                        return <div>
-                           <p id={`listen_${index}`}>{`${index + 1}. `}{question.question}</p>
-                           <p>{question.correct}</p>
-                           {question.answers.map(answer => {
-                              return <div>
-                                 <input type="radio" name={`listen_${index}`} value={answer} onClick={() => {
-                                    const tmp = [...listenChoices.slice(0, index), answer, ...listenChoices.slice(index + 1)]
-                                    setListenChoices(tmp)
-                                 }} checked={listenChoices[index] == answer} />&nbsp;{answer}<br /><br />
-                              </div>
-                           })}
-                        </div>
-                     })}
+                     {data.listenQuestions.slice(0, 8).map((question, index) => <div>
+                        <h5 id={`listen_${index}`}>{`${index + 1}. `}{question.question}</h5>
+                        {/* <p>{question.correct}</p> */}
+                        {question.answers.map(answer => <div>
+                           <input type="radio" name={`listen_${index}`} value={answer} onClick={() => {
+                              const tmp = [...listenChoices.slice(0, index), answer, ...listenChoices.slice(index + 1)]
+                              setListenChoices(tmp)
+                           }} checked={listenChoices[index] == answer} />&nbsp;{answer}<br /><br />
+                        </div>)}
+                     </div>)}
                      <h5>PART 2 - Questions 9-20</h5>
-                     {data.listenQuestions.slice(8, 20).map((question, index) => {
-                        return <div>
-                           <p id={`listen_${index + 8}`}>{`${index + 8 + 1}. `}{question.question}</p>
-                           <p>{question.correct}</p>
-                           {question.answers.map(answer => {
-                              return <div>
-                                 <input type="radio" name={`listen_${index + 8}`} value={answer} onClick={() => {
-                                    const tmp = [...listenChoices.slice(0, index + 8), answer, ...listenChoices.slice(index + 1 + 8)]
-                                    setListenChoices(tmp)
-                                 }} checked={listenChoices[index + 8] == answer} />&nbsp;{answer}<br /><br />
-                              </div>
-                           })}
-                        </div>
-                     })}
+                     {data.listenQuestions.slice(8, 20).map((question, index) => <div>
+                        <h5 id={`listen_${index + 8}`}>{`${index + 8 + 1}. `}{question.question}</h5>
+                        {/* <p>{question.correct}</p> */}
+                        {question.answers.map(answer => <div>
+                           <input type="radio" name={`listen_${index + 8}`} value={answer} onClick={() => {
+                              const tmp = [...listenChoices.slice(0, index + 8), answer, ...listenChoices.slice(index + 1 + 8)]
+                              setListenChoices(tmp)
+                           }} checked={listenChoices[index + 8] == answer} />&nbsp;{answer}<br /><br />
+                        </div>)}
+                     </div>)}
                      <h5>PART 3 - Questions 21-35</h5>
-                     {data.listenQuestions.slice(20, 36).map((question, index) => {
-                        return <div>
-                           <p id={`listen_${index + 20}`}>{`${index + 20 + 1}. `}{question.question}</p>
-                           <p>{question.correct}</p>
-                           {question.answers.map(answer => {
-                              return <div>
-                                 <input type="radio" name={`listen_${index + 20}`} value={answer} onClick={() => {
-                                    const tmp = [...listenChoices.slice(0, index + 20), answer, ...listenChoices.slice(index + 1 + 20)]
-                                    setListenChoices(tmp)
-                                 }} checked={listenChoices[index + 20] == answer} />&nbsp;{answer}<br /><br />
-                              </div>
-                           })}
-                        </div>
-                     })}
+                     {data.listenQuestions.slice(20, 36).map((question, index) => <div>
+                        <h5 id={`listen_${index + 20}`}>{`${index + 20 + 1}. `}{question.question}</h5>
+                        {/* <p>{question.correct}</p> */}
+                        {question.answers.map(answer => <div>
+                           <input type="radio" name={`listen_${index + 20}`} value={answer} onClick={() => {
+                              const tmp = [...listenChoices.slice(0, index + 20), answer, ...listenChoices.slice(index + 1 + 20)]
+                              setListenChoices(tmp)
+                           }} checked={listenChoices[index + 20] == answer} />&nbsp;{answer}<br /><br />
+                        </div>)}
+                     </div>)}
                      <button onClick={() => {
                         listeningCorrectCount = 0
                         let allAnswer = true, i = 0
@@ -203,28 +188,22 @@ const vstepIndex = () => {
                         <h5>Thời gian: 60 phút</h5>
                         <h5>Số câu hỏi: 40</h5>
                      </div>
-                     {data.readingData.map((reading, index) => {
-                        return <>
-                           <h5>PASSAGE {index + 1} - Questions {10 * index + 1}-{10 * index + 10}</h5>
-                           <div style={{ width: '100%', fontSize: '16px' }}>
-                              {parse(reading.text.replace(/\n/g, "<br>"))}<br /><br />
-                              {reading.questions.map((q, questionIndex) => {
-                                 return <div>
-                                    <p id={`reading_${10 * index + questionIndex}`}>{`${10 * index + questionIndex + 1}. ${q.question}`}</p>
-                                    <p>{q.correct}</p>
-                                    {q.answers.map(answer => {
-                                       return <div>
-                                          <input type="radio" name={`reading_${10 * index + questionIndex}`} value={answer} onClick={() => {
-                                             const tmp = [...readingChoices.slice(0, 10 * index + questionIndex), answer, ...readingChoices.slice(10 * index + questionIndex + 1)]
-                                             setReadingChoices(tmp)
-                                          }} checked={readingChoices[10 * index + questionIndex] == answer} />&nbsp;{answer}<br /><br />
-                                       </div>
-                                    })}
-                                 </div>
-                              })}
-                           </div>
-                        </>
-                     })}
+                     {data.readingData.map((reading, index) => <>
+                        <h5>PASSAGE {index + 1} - Questions {10 * index + 1}-{10 * index + 10}</h5>
+                        <div style={{ width: '100%', fontSize: '16px' }}>
+                           {parse(reading.text.replace(/\n/g, "<br>"))}<br /><br />
+                           {reading.questions.map((q, questionIndex) => <div>
+                              <h5 id={`reading_${10 * index + questionIndex}`}>{`${10 * index + questionIndex + 1}. ${q.question}`}</h5>
+                              {/* <p>{q.correct}</p> */}
+                              {q.answers.map(answer => <div>
+                                 <input type="radio" name={`reading_${10 * index + questionIndex}`} value={answer} onClick={() => {
+                                    const tmp = [...readingChoices.slice(0, 10 * index + questionIndex), answer, ...readingChoices.slice(10 * index + questionIndex + 1)]
+                                    setReadingChoices(tmp)
+                                 }} checked={readingChoices[10 * index + questionIndex] == answer} />&nbsp;{answer}<br /><br />
+                              </div>)}
+                           </div>)}
+                        </div>
+                     </>)}
                      <button onClick={() => {
                         readingCorrectCount = 0;
                         let allAnswer = true, i = 0, j = 0, errI = 0

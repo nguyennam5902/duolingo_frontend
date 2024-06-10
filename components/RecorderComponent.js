@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import parse from 'html-react-parser'
 import { toast } from "react-toastify"
-
+import { useRouter } from 'next/router'
 function secondsToTimeFormat(totalSeconds) {
    const hours = Math.floor(totalSeconds / 3600);
    const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -27,6 +27,7 @@ const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, liste
    const [audio, setAudio] = useState(null);
    const [seconds, setSeconds] = useState(0)
    const [isRunning, setIsRunning] = useState(false);
+   const router = useRouter()
    useEffect(() => {
       let interval;
       if (isRunning) {
@@ -140,7 +141,7 @@ const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, liste
                score: listeningCorrectCount
             })).data
             // TODO: FINISHED WRITING
-            const taskAnswerID = (await Promise.all([...writingData].map(data => axios.post(`/api/task/submit/`, {
+            const taskAnswerID = (await Promise.all(writingData.map(data => axios.post(`/api/task/submit/`, {
                taskID: data._id,
                userID: user.data._id,
                content: data.answer
@@ -162,6 +163,7 @@ const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, liste
                userID: user.data._id
             })
             toast.success('Done!')
+            router.push('/view-test')
          }}>Submit Recording</button>
       </div> : null}
    </>

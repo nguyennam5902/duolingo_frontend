@@ -1,8 +1,12 @@
 .courseBox {
-  border: 1px solid #ddd;
+  border: 10px solid #fff;
   padding: 10px;
-  margin: 10px;
   margin-bottom: 10px;
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  align-items: center;
 }
 
 .lessonLink {

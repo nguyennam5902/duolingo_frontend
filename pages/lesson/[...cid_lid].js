@@ -23,7 +23,7 @@ function shuffle(array) {
    return array;
 }
 async function getQuiz(courseID, lessonID) {
-   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/${courseID}/lessons/${lessonID}/exercises`);
+   const response = await fetch(`/api/courses/${courseID}/lessons/${lessonID}/exercises`);
    if (!response.ok) {
       throw new Error('Failed to fetch quiz data');
    }
@@ -42,8 +42,6 @@ async function handleEndCourse(point) {
       id: userAfter.data._id,
       score: point,
    });
-
-   window.location.href = "/user";
 }
 
 const QuizApp = () => {
@@ -161,9 +159,7 @@ const QuizContent = ({ quizData }) => {
       const bottomBar = document.querySelector(`.${styles.bottomBar}`);
       if (click % 2 == 0) {
          submitButton.textContent = "Tiếp tục"
-         if (Array.from(tmpState).map(id => {
-            return document.getElementById(id).innerText;
-         }).join(' ') === correctAnswer) {
+         if (Array.from(tmpState).map(id => document.getElementById(id).innerText).join(' ') === correctAnswer) {
             submitResult.textContent = 'Làm tốt lắm!';
             submitResult.style.color = `#58a700`
             submitButton.style.backgroundColor = '#58cc02';
@@ -203,26 +199,23 @@ const QuizContent = ({ quizData }) => {
       if (currentQuestionIndex < choice.length) {
          const currentQuestion = choice[currentQuestionIndex];
          correctAnswer = currentQuestion.correct
-         return (
-            <div style={{ position: 'relative', marginTop: '80px', display: 'flex', flexDirection: 'column', height: '650px' }}>
-               <p style={{ marginLeft: '475px', textAlign: 'left', fontSize: '32px', fontWeight: 'bold' }}>{"Chọn nghĩa đúng"}</p>
-               <p style={{ marginTop: '50px', textAlign: 'center', fontSize: '19px' }}>{currentQuestion.question}</p>
-               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  {currentQuestion.answers.map((answer, index) => (
-                     <button key={index} className={styles.answerButton} onClick={() => handleChoiceOptionSelect(answer)}>
-                        {answer}
-                     </button>
-                  ))}
-               </div>
-               <div className={styles.bottomBar}>
-                  <h2 className={styles.submitResult}></h2>
-                  <button disabled={!isEnabled} className={styles.submitButton} onClick={handleChoiceSubmit}>
-                     Kiểm tra
+         return <div style={{ position: 'relative', marginTop: '80px', display: 'flex', flexDirection: 'column', height: '650px' }}>
+            <p style={{ marginLeft: '475px', textAlign: 'left', fontSize: '32px', fontWeight: 'bold' }}>{"Chọn nghĩa đúng"}</p>
+            <p style={{ marginTop: '50px', textAlign: 'center', fontSize: '19px' }}>{currentQuestion.question}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+               {currentQuestion.answers.map((answer, index) => (
+                  <button key={index} className={styles.answerButton} onClick={() => handleChoiceOptionSelect(answer)}>
+                     {answer}
                   </button>
-               </div>
+               ))}
             </div>
-         );
-
+            <div className={styles.bottomBar}>
+               <h2 className={styles.submitResult}></h2>
+               <button disabled={!isEnabled} className={styles.submitButton} onClick={handleChoiceSubmit}>
+                  Kiểm tra
+               </button>
+            </div>
+         </div>
       } else if (currentQuestionIndex < choice.length + fill.length) {
          var old_left = null, old_right = null;
          var matched = 0;
@@ -333,62 +326,63 @@ const QuizContent = ({ quizData }) => {
                compareLeftRight()
             }
          }
-         return (
-            <div style={{ position: 'relative', marginTop: '80px', display: 'flex', flexDirection: 'column', height: '650px' }}>
-               <p style={{ marginLeft: '475px', textAlign: 'left', fontSize: '32px', fontWeight: 'bold' }}>{"Chọn cặp từ"}</p>
-               <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', marginLeft: '500px', marginTop: '100px' }}>
-                  {left_words.map((key, index) => {
-                     return <button key={key} id={`left_${index}`} onClick={() => handleLeftChoice(`left_${index}`)} style={{ color: '#4b4b4b', fontSize: '19px', fontFamily: 'din-round, sans-serif', background: '#ffffff', width: '256px', height: '50px', marginTop: '10px' }}>{key}</button>
-                  })}
-               </div>
-               <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', marginLeft: '800px', marginTop: '100px' }}>
-                  {right_words.map((key, index) => {
-                     return <button key={key} id={`right_${index}`} onClick={() => handleRightChoice(`right_${index}`)} style={{ color: '#4b4b4b', fontSize: '19px', fontFamily: 'din-round, sans-serif', background: '#ffffff', width: '256px', height: '50px', marginTop: '10px' }}>{key}</button>
-                  })}
-               </div>
-               <div className={styles.bottomBar}>
-                  <h2 className={styles.submitResult}></h2>
-                  <button disabled={!isEnabled} className={styles.submitButton} onClick={handleChoiceSubmit}>
-                     Kiểm tra
-                  </button>
-               </div>
+         return <div style={{ position: 'relative', marginTop: '80px', display: 'flex', flexDirection: 'column', height: '650px' }}>
+            <p style={{ marginLeft: '25%', textAlign: 'left', fontSize: '32px', fontWeight: 'bold' }}>Chọn cặp từ</p>
+            <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', marginLeft: '29%', marginTop: '100px' }}>
+               {left_words.map((key, index) => <button key={key} id={`left_${index}`} onClick={() => handleLeftChoice(`left_${index}`)}
+                  style={{ color: '#4b4b4b', fontSize: '19px', fontFamily: 'din-round, sans-serif', background: '#ffffff', width: '256px', height: '50px', marginTop: '10px' }}>{key}</button>
+               )}
             </div>
-         );
+            <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', marginLeft: '50%', marginTop: '100px' }}>
+               {right_words.map((key, index) => <button key={key} id={`right_${index}`} onClick={() => handleRightChoice(`right_${index}`)}
+                  style={{ color: '#4b4b4b', fontSize: '19px', fontFamily: 'din-round, sans-serif', background: '#ffffff', width: '256px', height: '50px', marginTop: '10px' }}>{key}</button>
+               )}
+            </div>
+            <div className={styles.bottomBar}>
+               <h2 className={styles.submitResult}></h2>
+               <button disabled={!isEnabled} className={styles.submitButton} onClick={handleChoiceSubmit}>
+                  Kiểm tra
+               </button>
+            </div>
+         </div>
       } else if (currentQuestionIndex < choice.length + fill.length + 1) {
          const currentQuestion = fill[currentQuestionIndex - choice.length - 1];
          correctAnswer = currentQuestion.correct
-         return (
-            <div style={{ position: 'relative', marginTop: '80px', display: 'flex', flexDirection: 'column', height: '650px' }}>
-               <p style={{ marginLeft: '475px', textAlign: 'left', fontSize: '32px', fontWeight: 'bold' }}>Chọn từ chính xác</p>
-               <p style={{ marginTop: '50px', textAlign: 'center', fontSize: '19px' }}>
-                  {`${currentQuestion.left_sentence} _____ ${currentQuestion.right_sentence}`}</p>
-               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  {currentQuestion.answers.map((answer, index) => (
-                     <button key={index} className={styles.answerButton} onClick={() => handleChoiceOptionSelect(answer)}>
-                        {answer}
-                     </button>
-                  ))}
-               </div>
-               <div className={styles.bottomBar}>
-                  <h2 className={styles.submitResult}></h2>
-                  <button disabled={!isEnabled} className={styles.submitButton} onClick={handleChoiceSubmit}>
-                     Kiểm tra
-                  </button>
-               </div>
+         return <div style={{ position: 'relative', marginTop: '80px', display: 'flex', flexDirection: 'column', height: '650px' }}>
+            <p style={{ marginLeft: '475px', textAlign: 'left', fontSize: '32px', fontWeight: 'bold' }}>Chọn từ chính xác</p>
+            <p style={{ marginTop: '50px', textAlign: 'center', fontSize: '19px' }}>
+               {`${currentQuestion.left_sentence} _____ ${currentQuestion.right_sentence}`}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+               {currentQuestion.answers.map((answer, index) => <button key={index} className={styles.answerButton} onClick={() => handleChoiceOptionSelect(answer)}>
+                  {answer}
+               </button>)}
             </div>
-         );
-
+            <div className={styles.bottomBar}>
+               <h2 className={styles.submitResult}></h2>
+               <button disabled={!isEnabled} className={styles.submitButton} onClick={handleChoiceSubmit}>
+                  Kiểm tra
+               </button>
+            </div>
+         </div>
       } else {
          if (showResult) {
             const userID = String(JSON.parse(window.localStorage.getItem('user')).data._id);
             const isPerfect = correct === choice.length + fill.length + sentence.length + 1 ? 1 : 0;
-            axios.post(`/api/courses/${courseID}/lessons/${lessonID}/submit/${isPerfect}`, {
-               userID
-            });
+            axios.post(`/api/courses/${courseID}/lessons/${lessonID}/submit/${isPerfect}`, { userID })
+            handleEndCourse(isPerfect ? 25 : 20)
             return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', marginTop: '15%' }}>
-               <div style={{
-                  fontSize: '32px', color: `#ffc800`
-               }}><strong>Tập luyện hoàn tất</strong></div>
+               <div>
+                  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
+                     <linearGradient id="dy387SCudbBlR6FY1Dyrka_XZMUH9D4Jd77_gr1" x1="9.009" x2="38.092" y1="6.36" y2="45.266" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffda1c"></stop><stop offset="1" stop-color="#feb705"></stop></linearGradient><path fill="url(#dy387SCudbBlR6FY1Dyrka_XZMUH9D4Jd77_gr1)" d="M24.913,5.186l5.478,12.288l13.378,1.413c0.861,0.091,1.207,1.158,0.564,1.737l-9.993,9.005	l2.791,13.161c0.18,0.847-0.728,1.506-1.478,1.074L24,37.141l-11.653,6.722c-0.75,0.432-1.657-0.227-1.478-1.074l2.791-13.161	l-9.993-9.005c-0.643-0.579-0.296-1.646,0.564-1.737l13.378-1.413l5.478-12.288C23.439,4.395,24.561,4.395,24.913,5.186z"></path>
+                  </svg>
+                  {isPerfect ? Array.from({ length: 2 }).map(_ => <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
+                     <linearGradient id="dy387SCudbBlR6FY1Dyrka_XZMUH9D4Jd77_gr1" x1="9.009" x2="38.092" y1="6.36" y2="45.266" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffda1c"></stop><stop offset="1" stop-color="#feb705"></stop></linearGradient><path fill="url(#dy387SCudbBlR6FY1Dyrka_XZMUH9D4Jd77_gr1)" d="M24.913,5.186l5.478,12.288l13.378,1.413c0.861,0.091,1.207,1.158,0.564,1.737l-9.993,9.005	l2.791,13.161c0.18,0.847-0.728,1.506-1.478,1.074L24,37.141l-11.653,6.722c-0.75,0.432-1.657-0.227-1.478-1.074l2.791-13.161	l-9.993-9.005c-0.643-0.579-0.296-1.646,0.564-1.737l13.378-1.413l5.478-12.288C23.439,4.395,24.561,4.395,24.913,5.186z"></path>
+                  </svg>) : correct / (choice.length + fill.length + sentence.length + 1) > 0.50 ?
+                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
+                        <linearGradient id="dy387SCudbBlR6FY1Dyrka_XZMUH9D4Jd77_gr1" x1="9.009" x2="38.092" y1="6.36" y2="45.266" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffda1c"></stop><stop offset="1" stop-color="#feb705"></stop></linearGradient><path fill="url(#dy387SCudbBlR6FY1Dyrka_XZMUH9D4Jd77_gr1)" d="M24.913,5.186l5.478,12.288l13.378,1.413c0.861,0.091,1.207,1.158,0.564,1.737l-9.993,9.005	l2.791,13.161c0.18,0.847-0.728,1.506-1.478,1.074L24,37.141l-11.653,6.722c-0.75,0.432-1.657-0.227-1.478-1.074l2.791-13.161	l-9.993-9.005c-0.643-0.579-0.296-1.646,0.564-1.737l13.378-1.413l5.478-12.288C23.439,4.395,24.561,4.395,24.913,5.186z"></path>
+                     </svg> : <></>}
+               </div>
+               <div style={{ fontSize: '32px', color: `#ffc800` }}><b>Tập luyện hoàn tất</b></div>
                <p style={{ marginTop: '20px', fontSize: '19px', color: `#afafaf` }}>Chính xác: {correct} / {choice.length + fill.length + sentence.length + 1}</p>
                <div style={{ marginTop: '50px', display: 'flex' }}>
                   <div style={{ marginRight: '10px', height: '100px', width: '170px', border: '5px solid #FFC800' }}>
@@ -400,44 +394,36 @@ const QuizContent = ({ quizData }) => {
                      <div style={{ textAlign: 'center', fontSize: '32px' }}>{Math.round(correct * 100 / (choice.length + fill.length + sentence.length + 1))}%</div>
                   </div>
                </div>
-
-               <button type="button" className={styles.submitButtonEnable} onClick={() => handleEndCourse(20 + (isPerfect ? 5 : 0))}>
-                  Tiếp tục
-               </button>
-            </div>;
+               <button type="button" className={styles.submitButtonEnable} onClick={() => window.location.href = `/courses/${courseID}`}>Tiếp tục</button>
+            </div>
          }
          const currentQuestion = sentence[currentQuestionIndex - choice.length - 1 - fill.length];
          correctAnswer = currentQuestion.correct
-         return (
-            <div style={{ position: 'relative', marginTop: '80px', display: 'flex', flexDirection: 'column', height: '650px' }}>
-               <p style={{ marginLeft: '475px', textAlign: 'left', fontSize: '32px', fontWeight: 'bold' }}>Viết lại câu</p>
-               <p style={{ marginTop: '50px', textAlign: 'center', fontSize: '19px' }}>{currentQuestion.sentence}</p>
-               <div className='answerText' style={{
-                  alignSelf: 'center', width: '60%', marginTop: '99px',
-                  display: 'flex', flexDirection: 'row', alignItems: 'center'
-               }}></div>
-               <div style={{
-                  alignSelf: 'center', width: '60%', marginTop: '1px', borderTop: '2px solid black',
-                  display: 'flex', flexDirection: 'row', alignItems: 'center'
-               }}></div>
-               <div style={{ marginTop: '60px', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  {currentQuestion.words.map((answer, index) => (
-                     <button key={index} id={`button_${index}`} className={styles.sentenceButton}
-                        onClick={() => handleSentenceOptionSelect(answer, index, tmpState)}>
-                        {answer}
-                     </button>
-                  ))}
-               </div>
-               <div className={styles.bottomBar}>
-                  <h2 className={styles.submitResult}></h2>
-                  <div className={styles.submitAnswer}></div>
-                  <button disabled={!isEnabled} className={styles.submitButton} onClick={() => handleSentenceSubmit()}>
-                     Kiểm tra
-                  </button>
-               </div>
+         return <div style={{ position: 'relative', marginTop: '80px', display: 'flex', flexDirection: 'column', height: '650px' }}>
+            <p style={{ marginLeft: '475px', textAlign: 'left', fontSize: '32px', fontWeight: 'bold' }}>Viết lại câu</p>
+            <p style={{ marginTop: '50px', textAlign: 'center', fontSize: '19px' }}>{currentQuestion.sentence}</p>
+            <div className='answerText' style={{
+               alignSelf: 'center', width: '60%', marginTop: '99px',
+               display: 'flex', flexDirection: 'row', alignItems: 'center'
+            }}></div>
+            <div style={{
+               alignSelf: 'center', width: '60%', marginTop: '1px', borderTop: '2px solid black',
+               display: 'flex', flexDirection: 'row', alignItems: 'center'
+            }}></div>
+            <div style={{ marginTop: '60px', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+               {currentQuestion.words.map((answer, index) => <button key={index} id={`button_${index}`} className={styles.sentenceButton}
+                  onClick={() => handleSentenceOptionSelect(answer, index, tmpState)}>
+                  {answer}
+               </button>)}
             </div>
-         );
-
+            <div className={styles.bottomBar}>
+               <h2 className={styles.submitResult}></h2>
+               <div className={styles.submitAnswer}></div>
+               <button disabled={!isEnabled} className={styles.submitButton} onClick={() => handleSentenceSubmit()}>
+                  Kiểm tra
+               </button>
+            </div>
+         </div>
       }
    };
 
@@ -466,17 +452,11 @@ const QuizContent = ({ quizData }) => {
       setEnabled(true);
       s.style.backgroundColor = '#58cc02';
       s.style.color = '#ffffff';
-      const answer = Array.from(tmpState).map(id => {
-         return document.getElementById(id).innerText;
-      });
+      const answer = Array.from(tmpState).map(id => document.getElementById(id).innerText);
       const text = document.querySelector('.answerText');
       text.textContent = answer.join(' ');
    };
-   return (
-      <div>
-         {renderQuizContent(quizData.courseID, quizData.lessonID)}
-      </div>
-   );
+   return <div>{renderQuizContent(quizData.courseID, quizData.lessonID)}</div>
 };
 
 export default QuizApp;

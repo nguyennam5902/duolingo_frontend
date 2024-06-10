@@ -44,7 +44,7 @@ const UserIndex = () => {
         });
         setLoading(false);
       } catch (err) {
-        console.log(err);
+        console.log("ERROR:", err);
         setLoading(false);
       }
     }

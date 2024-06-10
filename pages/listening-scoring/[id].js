@@ -25,14 +25,14 @@ const pageIndex = () => {
       const getData = async () => {
          if (id) {
             const data = (await axios.get(`/api/scoring/listening/${id}`)).data.data;
-            console.log("FULL:", data);
+            // console.log("FULL:", data);
             const questions = data.listeningID.questions;
             const qData = []
             for (let i = 0; i < questions.length; i++) {
                const tmp = (await axios.get(`/api/choice-questions/${questions[i]}`)).data.data;
                qData.push(tmp);
             }
-            console.log("Q:", qData);
+            // console.log("Q:", qData);
             setData({
                filename: data.listeningID.fileID,
                questions: qData,
@@ -64,31 +64,24 @@ const pageIndex = () => {
             style={{ display: "flex", flexDirection: 'column', width: '834px', margin: '0 auto' }}>
             <AudioPlayer
                src={`/api/audio/${data.filename}`}
-               onPlay={_e => console.log("onPlay")}
                style={{
                   width: '100%'
                }}
                header={<h3 style={{ color: 'white' }}>Part 1</h3>}
             />
-            {data.questions.map((q, i) => {
-               return <>
-                  <p>{`${i + 1}. `}{q.question}</p>
-                  <h5>{q.correct}</h5>
-                  {q.answers.map(answer => {
-                     return <div>
-                        <input disabled type="radio" name={`listen_${i}`} value={answer} checked={data.choices[i] == answer}
-                        />&nbsp;{answer}&nbsp;
-                        {answer == q.correct ? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48"><path fill="#84cc16" fill-rule="evenodd" stroke="#84cc16" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M4 24L9 19L19 29L39 9L44 14L19 39L4 24Z" clip-rule="evenodd" /></svg> :
-                           <svg fill="#ff0000" height="16" width="16" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 208.891 208.891" xmlSpace="preserve" stroke="#ff0000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M0,170l65.555-65.555L0,38.891L38.891,0l65.555,65.555L170,0l38.891,38.891l-65.555,65.555L208.891,170L170,208.891 l-65.555-65.555l-65.555,65.555L0,170z"></path> </g></svg>
-                        }
-                        <br /><br />
-                     </div>
-                  })}
-               </>
-            })}
+            {data.questions.map((q, i) => <>
+               <h5>{`${i + 1}. `}{q.question}</h5>
+               {q.answers.map(answer => <div>
+                  <input disabled type="radio" name={`listen_${i}`} value={answer} checked={data.choices[i] == answer} />&nbsp;{answer}&nbsp;
+                  {answer == q.correct ? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48"><path fill="#84cc16" fill-rule="evenodd" stroke="#84cc16" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M4 24L9 19L19 29L39 9L44 14L19 39L4 24Z" clip-rule="evenodd" /></svg> :
+                     <svg fill="#ff0000" height="16" width="16" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 208.891 208.891" xmlSpace="preserve" stroke="#ff0000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M0,170l65.555-65.555L0,38.891L38.891,0l65.555,65.555L170,0l38.891,38.891l-65.555,65.555L208.891,170L170,208.891 l-65.555-65.555l-65.555,65.555L0,170z"></path> </g></svg>
+                  }
+                  <br /><br />
+               </div>)}
+            </>)}
             <p>Scoring:</p>
             <input defaultValue={data.score} disabled></input>
-            <br/><a href='/scoring'>Quay trở về</a>
+            <br /><a href='/scoring'>Quay trở về</a>
          </div>}
       </div>
    </>

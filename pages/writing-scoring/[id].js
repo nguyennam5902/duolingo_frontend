@@ -7,6 +7,7 @@ import parse from 'html-react-parser'
 import 'react-h5-audio-player/lib/styles.css';
 import { Context } from "../../context";
 import { toast } from "react-toastify";
+import AutoExpandingTextarea from '../../components/AutoExpandingTextarea';
 
 const pageIndex = () => {
    const {
@@ -71,9 +72,7 @@ const pageIndex = () => {
             <h5>Task {data.type}</h5>
             <p>{parse(data.text.replace(/\n/g, "<br>"))}</p>
             <h2>Student answer</h2>
-            <textarea defaultValue={data.answer} disabled={true} style={{
-               width: '100%'
-            }}></textarea>
+            <AutoExpandingTextarea defaultValue={data.answer} disabled={true} />
             <p>Number of words: {countWords(data.answer)}</p>
             <p>Scoring:</p>
             <input defaultValue={data.score != -1 ? data.score : 0} disabled={data.score != -1}
@@ -89,7 +88,7 @@ const pageIndex = () => {
             }}>
                Finish
             </button>}
-            <br/><a href='/scoring'>Quay trở về</a>
+            <br /><a href='/scoring'>Quay trở về</a>
          </div>}
       </div>
    </>

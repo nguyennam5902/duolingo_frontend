@@ -6,8 +6,10 @@ import axios from "axios";
 import { SyncOutlined } from "@ant-design/icons";
 import { getTimeDistance } from '../../utils/helpers'
 import { formatISO9075 } from 'date-fns';
+import { useRouter } from "next/router";
 
 const viewIndex = () => {
+   const router = useRouter()
    const cellStyle = {
       border: '1px solid black', // Add a border to each cell
       padding: '8px' // Add padding for better appearance
@@ -27,7 +29,7 @@ const viewIndex = () => {
             if (user) {
                setLoading(true)
                const tests = (await axios.get(`/api/test/search/${user.data._id}`)).data
-               console.log("DATA:", tests);
+               // console.log("DATA:", tests);
                setData(tests.data)
                setFilterData(tests.data)
                setLoading(false)
@@ -45,22 +47,16 @@ const viewIndex = () => {
       </Head>
       <h1 className="jumbotron text-center square">Xem điểm thi VSTEP</h1>
       <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center' }}>
-         <div style={{
-            display: 'flex', flexDirection: 'row'
-         }}>
+         <div style={{ display: 'flex', flexDirection: 'row' }}>
             <p>Từ:</p>&nbsp;&nbsp;&nbsp;&nbsp;
             <input aria-label="Date" type="date" onChange={e => setFromDate(e.target.value)} />
          </div>
          <br />
-         <div style={{
-            display: 'flex', flexDirection: 'row'
-         }}>
+         <div style={{ display: 'flex', flexDirection: 'row' }}>
             <p>Đến:</p>&nbsp;&nbsp;&nbsp;&nbsp;
             <input aria-label="Date" type="date" onChange={e => setToDate(e.target.value)} />
          </div>
-         {loading && <SyncOutlined spin
-            className="d-flex justify-content-center display-1 text-danger p-5"
-         />}
+         {loading && <SyncOutlined spin className="d-flex justify-content-center display-1 text-danger p-5" />}
          {!loading && <>
             <div style={{ display: "flex", flexDirection: 'column', width: '834px', margin: '0 auto', justifyContent: 'center', alignItems: 'center' }}>
                <br /><table style={{
