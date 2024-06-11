@@ -3,12 +3,12 @@ import { useContext, useEffect, useState } from "react";
 import Head from 'next/head';
 import { toast } from "react-toastify";
 import { SyncOutlined } from '@ant-design/icons'
-import parse from 'html-react-parser'
-import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import { Context } from "../context";
 import AudioRecorder from "../components/RecorderComponent";
 import WritingIndex from "../components/WritingComponent";
+import ReadingComponent from "../components/ReadingComponent";
+import ListeningComponent from "../components/ListeningComponent";
 
 let listeningCorrectCount = 0;
 let readingCorrectCount = 0;
@@ -117,50 +117,8 @@ const vstepIndex = () => {
                {loading ? <SyncOutlined spin className="d-flex justify-content-center display-1 text-danger p-5" /> : <div
                   style={{ display: "flex", flexDirection: 'column', width: '834px', margin: '0 auto' }}>
                   {current == 0 && <>
-                     <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center' }}>
-                        <h3>PHẦN 1: NGHE HIỂU - VSTEP LISTENING</h3>
-                        <h5>Thời gian: Khoảng 40 phút</h5>
-                        <h5>Số câu hỏi: 35</h5>
-                     </div>
-                     <AudioPlayer
-                        src={`/api/audio/${data.filename}`}
-                        style={{ width: '100%' }}
-                        showJumpControls={false}
-                        header={<h3 style={{ color: 'white' }}>Part 1</h3>}
-                     />
-                     <h5>PART 1 - Questions 1-8</h5>
-                     {data.listenQuestions.slice(0, 8).map((question, index) => <div>
-                        <h5 id={`listen_${index}`}>{`${index + 1}. `}{question.question}</h5>
-                        {/* <p>{question.correct}</p> */}
-                        {question.answers.map(answer => <div>
-                           <input type="radio" name={`listen_${index}`} value={answer} onClick={() => {
-                              const tmp = [...listenChoices.slice(0, index), answer, ...listenChoices.slice(index + 1)]
-                              setListenChoices(tmp)
-                           }} checked={listenChoices[index] == answer} />&nbsp;{answer}<br /><br />
-                        </div>)}
-                     </div>)}
-                     <h5>PART 2 - Questions 9-20</h5>
-                     {data.listenQuestions.slice(8, 20).map((question, index) => <div>
-                        <h5 id={`listen_${index + 8}`}>{`${index + 8 + 1}. `}{question.question}</h5>
-                        {/* <p>{question.correct}</p> */}
-                        {question.answers.map(answer => <div>
-                           <input type="radio" name={`listen_${index + 8}`} value={answer} onClick={() => {
-                              const tmp = [...listenChoices.slice(0, index + 8), answer, ...listenChoices.slice(index + 1 + 8)]
-                              setListenChoices(tmp)
-                           }} checked={listenChoices[index + 8] == answer} />&nbsp;{answer}<br /><br />
-                        </div>)}
-                     </div>)}
-                     <h5>PART 3 - Questions 21-35</h5>
-                     {data.listenQuestions.slice(20, 36).map((question, index) => <div>
-                        <h5 id={`listen_${index + 20}`}>{`${index + 20 + 1}. `}{question.question}</h5>
-                        {/* <p>{question.correct}</p> */}
-                        {question.answers.map(answer => <div>
-                           <input type="radio" name={`listen_${index + 20}`} value={answer} onClick={() => {
-                              const tmp = [...listenChoices.slice(0, index + 20), answer, ...listenChoices.slice(index + 1 + 20)]
-                              setListenChoices(tmp)
-                           }} checked={listenChoices[index + 20] == answer} />&nbsp;{answer}<br /><br />
-                        </div>)}
-                     </div>)}
+                     <ListeningComponent filename={data.filename} listenChoices={listenChoices} listenQuestions={data.listenQuestions}
+                        setListenChoices={tmp => setListenChoices(tmp)} />
                      <button onClick={() => {
                         listeningCorrectCount = 0
                         let allAnswer = true, i = 0
@@ -183,27 +141,7 @@ const vstepIndex = () => {
                      }}>Submit</button>
                   </>}
                   {current == 1 && <>
-                     <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center' }}>
-                        <h3>PHẦN 2: ĐỌC HIỂU - VSTEP READING</h3>
-                        <h5>Thời gian: 60 phút</h5>
-                        <h5>Số câu hỏi: 40</h5>
-                     </div>
-                     {data.readingData.map((reading, index) => <>
-                        <h5>PASSAGE {index + 1} - Questions {10 * index + 1}-{10 * index + 10}</h5>
-                        <div style={{ width: '100%', fontSize: '16px' }}>
-                           {parse(reading.text.replace(/\n/g, "<br>"))}<br /><br />
-                           {reading.questions.map((q, questionIndex) => <div>
-                              <h5 id={`reading_${10 * index + questionIndex}`}>{`${10 * index + questionIndex + 1}. ${q.question}`}</h5>
-                              {/* <p>{q.correct}</p> */}
-                              {q.answers.map(answer => <div>
-                                 <input type="radio" name={`reading_${10 * index + questionIndex}`} value={answer} onClick={() => {
-                                    const tmp = [...readingChoices.slice(0, 10 * index + questionIndex), answer, ...readingChoices.slice(10 * index + questionIndex + 1)]
-                                    setReadingChoices(tmp)
-                                 }} checked={readingChoices[10 * index + questionIndex] == answer} />&nbsp;{answer}<br /><br />
-                              </div>)}
-                           </div>)}
-                        </div>
-                     </>)}
+                     <ReadingComponent readingData={data.readingData} readingChoices={readingChoices} setReadingChoices={tmp => { setReadingChoices(tmp) }} />
                      <button onClick={() => {
                         readingCorrectCount = 0;
                         let allAnswer = true, i = 0, j = 0, errI = 0
@@ -230,6 +168,7 @@ const vstepIndex = () => {
                            toast.error(`Hãy trả lời câu hỏi ${10 * errI + j + 1}`)
                         }
                      }}>Submit</button>
+
                   </>}
                   {current == 2 && <>
                      <WritingIndex text={writingAnswers} onChange={(e, index) => {
