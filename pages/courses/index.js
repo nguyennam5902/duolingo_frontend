@@ -38,15 +38,17 @@ const Courses = () => {
          Online Learning English: Courses
       </h1>
       {courses.length > 0 ? (
-         courses.map(course => <div className={styles.courseBox} key={course.courseID}
-            style={{
-               background: '#89E219',
-               fontSize: '25px',
-            }}>
+         courses.map(course =>
             <a href={`/courses/${course.courseID}`} style={{
                color: 'white',
-            }}><b>{course.title}</b></a>
-         </div>
+            }}><div className={styles.courseBox} key={course.courseID}
+               style={{
+                  background: '#89E219',
+                  fontSize: '25px',
+               }}>
+                  <b>{course.title}</b>
+               </div>
+            </a>
          )) : (<p>No courses available.</p>)}
    </>
 };
