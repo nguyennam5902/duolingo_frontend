@@ -29,7 +29,7 @@ const FollowButton = ({ firstState, userID, friendID, text = "" }) => {
                data: { "userID": userID, "friendID": friendID }
             });
          if (w.data.meta.code == 200) {
-            toast.success(`${needFollow ? `F` : `Unf`}ollow successfully!`, { autoClose: 1000 });
+            toast.success(`${needFollow ? `T` : `Bỏ t`}heo dõi thành công!`, { autoClose: 1000 });
             setNeed(!needFollow);
          } else {
             toast.error(w.data.meta.message);

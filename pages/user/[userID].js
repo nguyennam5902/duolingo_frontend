@@ -79,7 +79,7 @@ const UserIndex = () => {
       "friendID": userID
     });
     if (w.data.meta.code == 200) {
-      toast.success('Follow successfully!', { autoClose: 1000 });
+      toast.success('Theo dõi thành công!', { autoClose: 1000 });
     } else {
       toast.error(w.data.meta.message);
     }
@@ -92,7 +92,7 @@ const UserIndex = () => {
       }
     });
     if (w.data.meta.code == 200) {
-      toast.success('Unfollow successfully!', { autoClose: 1000 });
+      toast.success('Bỏ theo dõi thành công!', { autoClose: 1000 });
     } else {
       toast.error(w.data.meta.message);
     }
@@ -146,7 +146,7 @@ const UserIndex = () => {
       </button >}
     </div >
     <div style={{
-      width: '400px', marginTop: `-2${(check(userID) || (ls && userID != JSON.parse(ls).data._id)) ? 7 : 2}%`,
+      width: '400px', marginTop: `-22%`,
       marginLeft: '60%'
     }}>
       <div style={{ display: 'flex' }}>
