@@ -133,7 +133,7 @@ const vstepIndex = () => {
                         }
                         if (allAnswer) {
                            setCurrent(current + 1);
-                           toast.success(`lcc:${listeningCorrectCount}`)
+                           // toast.success(`lcc:${listeningCorrectCount}`)
                         } else {
                            document.getElementById(`listen_${i}`).scrollIntoView({ behavior: 'smooth' })
                            toast.error(`Hãy trả lời câu hỏi ${i + 1}`)

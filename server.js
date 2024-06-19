@@ -15,7 +15,8 @@ app
       server.use(
         "/api",
         createProxyMiddleware({
-          target: "http://localhost:3000/",
+          target: "https://duolingo-backend.onrender.com/",
+          // target: "http://localhost:3000/",
           changeOrigin: true,
         })
       );

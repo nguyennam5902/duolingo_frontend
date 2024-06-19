@@ -56,6 +56,16 @@ const viewIndex = () => {
             <p>Đến:</p>&nbsp;&nbsp;&nbsp;&nbsp;
             <input aria-label="Date" type="date" onChange={e => setToDate(e.target.value)} />
          </div>
+         <br /><button disabled={fromDate.length * toDate.length == 0} onClick={async () => {
+            const from = new Date(fromDate);
+            const to = new Date(toDate);
+            const filterData = data.filter(item => {
+               const createdAtDate = new Date(item.createdAt);
+               return createdAtDate >= from && createdAtDate <= to;
+            })
+            setFilterData(filterData)
+            toast.success(`Tìm kiếm hoàn thành`, { autoClose: 400 })
+         }}>Tìm</button>
          {loading && <SyncOutlined spin className="d-flex justify-content-center display-1 text-danger p-5" />}
          {!loading && <>
             <div style={{ display: "flex", flexDirection: 'column', width: '834px', margin: '0 auto', justifyContent: 'center', alignItems: 'center' }}>
@@ -83,16 +93,6 @@ const viewIndex = () => {
                </table>
             </div>
          </>}
-         <br /><button disabled={fromDate.length * toDate.length == 0} onClick={async () => {
-            const from = new Date(fromDate);
-            const to = new Date(toDate);
-            const filterData = data.filter(item => {
-               const createdAtDate = new Date(item.createdAt);
-               return createdAtDate >= from && createdAtDate <= to;
-            })
-            setFilterData(filterData)
-            toast.success(`Tìm kiếm hoàn thành`, { autoClose: 400 })
-         }}>Tìm</button>
       </div>
    </>
 }
