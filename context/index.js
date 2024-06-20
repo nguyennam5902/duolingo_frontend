@@ -1,6 +1,6 @@
 import { useReducer, createContext, useEffect } from "react";
 import axios from "axios";
-import { useRouter, userRouter } from "next/router";
+import { useRouter } from "next/router";
 
 // initial state
 const intialState = {
@@ -49,7 +49,7 @@ const Provider = ({ children }) => {
       if (res.status === 401 && res.config && !res.config.__isRetryRequest) {
         return new Promise((resolve, reject) => {
           axios
-            .get("/api/logout")
+            .get(`${process.env.NEXT_PUBLIC_API_URL}/logout`)
             .then((data) => {
               console.log("/401 error > logout");
               dispatch({ type: "LOGOUT" });

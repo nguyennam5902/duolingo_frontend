@@ -7,6 +7,8 @@ import 'react-h5-audio-player/lib/styles.css';
 import { SyncOutlined } from '@ant-design/icons'
 import parse from 'html-react-parser'
 import AutoExpandingTextarea from '../../components/AutoExpandingTextarea';
+import 'dotenv/config';
+
 const countWords = (input) => {
    const str = String(input).trim();
    const words = str.split(/\s+/);
@@ -37,7 +39,7 @@ const pageIndex = () => {
       const getData = async () => {
          if (id) {
             setLoading(true)
-            const data = (await axios.get(`/api/view-test/${id}`)).data
+            const data = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/view-test/${id}`)).data
             // console.log("DATA:", data.data);
             setData({
                filename: data.data.listeningAnswerID.listeningID.fileID,
@@ -93,7 +95,7 @@ const pageIndex = () => {
                         <h5>Số câu hỏi: 35</h5>
                      </div>
                      <AudioPlayer
-                        src={`/api/audio/${data.filename}`}
+                        src={`${process.env.NEXT_PUBLIC_API_URL}/audio/${data.filename}`}
                         style={{ width: '100%' }}
                         header={<h3 style={{ color: 'white' }}>Part 1</h3>}
                      />
@@ -186,10 +188,8 @@ const pageIndex = () => {
                         <h5>Số câu hỏi: 3</h5>
                      </div>
                      <AudioPlayer
-                        src={`/api/speaking/answers/${data.speakingAnswerID}`}
-                        style={{
-                           width: '100%'
-                        }}
+                        src={`${process.env.NEXT_PUBLIC_API_URL}/speaking/answers/${data.speakingAnswerID}`}
+                        style={{ width: '100%' }}
                         header={<h3 style={{ color: 'white' }}>Student audio</h3>}
                      />
                      {data.speakingParts.length != 0 && <div>

@@ -7,6 +7,7 @@ import { SyncOutlined } from "@ant-design/icons";
 import { useRouter } from 'next/router'
 import { getTimeDistance } from '../utils/helpers'
 import { formatISO9075 } from 'date-fns';
+import 'dotenv/config';
 
 const Scoring = () => {
    const router = useRouter();
@@ -78,7 +79,7 @@ const Scoring = () => {
                   <br />
                   <button style={{ width: '19%' }} disabled={studentID.length == 0} type='button' onClick={async () => {
                      setLoading(true);
-                     const studentData = (await axios.get(`/api/scoring/student/${studentID}`)).data
+                     const studentData = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/scoring/student/${studentID}`)).data
                      toast.success("Tìm kiếm hoàn thành!", { autoClose: 400 });
                      // console.log("DATA:", studentData.data.s);
                      setData({

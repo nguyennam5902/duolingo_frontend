@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { Menu } from "antd";
 import Link from "next/link";
 import { AppstoreOutlined, LoginOutlined, ProfileOutlined, UserAddOutlined } from "@ant-design/icons";
-
+import 'dotenv/config';
 import { Context } from "../context";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -25,7 +25,7 @@ const TopNav = () => {
     dispatch({ type: "LOGOUT" });
     window.localStorage.removeItem("user");
     toast.success("Logout successfully!");
-    await axios.get("/api/logout");
+    await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/logout`);
     router.push("/login");
   };
 

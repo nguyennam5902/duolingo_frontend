@@ -6,6 +6,7 @@ import { SyncOutlined } from "@ant-design/icons";
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import { Context } from "../../context";
+import 'dotenv/config';
 
 const pageIndex = () => {
    const {
@@ -24,12 +25,12 @@ const pageIndex = () => {
    useEffect(() => {
       const getData = async () => {
          if (id) {
-            const data = (await axios.get(`/api/scoring/listening/${id}`)).data.data;
+            const data = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/scoring/listening/${id}`)).data.data;
             // console.log("FULL:", data);
             const questions = data.listeningID.questions;
             const qData = []
             for (let i = 0; i < questions.length; i++) {
-               const tmp = (await axios.get(`/api/choice-questions/${questions[i]}`)).data.data;
+               const tmp = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/choice-questions/${questions[i]}`)).data.data;
                qData.push(tmp);
             }
             // console.log("Q:", qData);
@@ -63,7 +64,7 @@ const pageIndex = () => {
          {!loading && <div
             style={{ display: "flex", flexDirection: 'column', width: '834px', margin: '0 auto' }}>
             <AudioPlayer
-               src={`/api/audio/${data.filename}`}
+               src={`${process.env.NEXT_PUBLIC_API_URL}/audio/${data.filename}`}
                style={{
                   width: '100%'
                }}

@@ -3,6 +3,8 @@ import axios from "axios";
 import parse from 'html-react-parser'
 import { toast } from "react-toastify"
 import { useRouter } from 'next/router'
+import 'dotenv/config';
+
 function secondsToTimeFormat(totalSeconds) {
    const hours = Math.floor(totalSeconds / 3600);
    const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -127,26 +129,26 @@ const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, liste
          <audio src={audio} controls></audio><br />
          <button onClick={async () => {
             // TODO: FINISHED LISTENING
-            const readingAnswerID = (await axios.post(`/api/reading/submit/`, {
+            const readingAnswerID = (await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/reading/submit/`, {
                readingIDs: readingIDs,
                userID: user.data._id,
                choices: readingChoices,
                score: readingCorrectCount
             })).data
             // TODO: FINISHED READING
-            const listeningAnswerID = (await axios.post(`/api/listen/submit/`, {
+            const listeningAnswerID = (await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/listen/submit/`, {
                listeningID: listenID,
                userID: user.data._id,
                choices: listeningChoices,
                score: listeningCorrectCount
             })).data
             // TODO: FINISHED WRITING
-            const taskAnswerID = (await Promise.all(writingData.map(data => axios.post(`/api/task/submit/`, {
+            const taskAnswerID = (await Promise.all(writingData.map(data => axios.post(`${process.env.NEXT_PUBLIC_API_URL}/task/submit/`, {
                taskID: data._id,
                userID: user.data._id,
                content: data.answer
             })))).map(task => task.data.data)
-            const speakingAnswerID = (await axios.post('/api/speaking/upload', {
+            const speakingAnswerID = (await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/speaking/upload`, {
                file: finalRecord,
                userID: user.data._id,
                parts: speakingData.map(part => part._id)
@@ -155,7 +157,7 @@ const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, liste
             // console.log("READING:", readingAnswerID.data);
             // console.log("WRITING:", taskAnswerID);
             // console.log("SPEAKING:", speakingAnswerID.data);
-            axios.post('/api/test', {
+            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/test`, {
                listeningAnswerID: listeningAnswerID.data,
                readingAnswerID: readingAnswerID.data,
                taskAnswerID: taskAnswerID,

@@ -1,5 +1,6 @@
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
+import 'dotenv/config';
 
 const ListeningComponent = ({ filename, listenQuestions, listenChoices, setListenChoices }) => {
    return <>
@@ -9,7 +10,7 @@ const ListeningComponent = ({ filename, listenQuestions, listenChoices, setListe
          <h5>Số câu hỏi: 35</h5>
       </div>
       <AudioPlayer
-         src={`/api/audio/${filename}`}
+         src={`${process.env.NEXT_PUBLIC_API_URL}/audio/${filename}`}
          style={{ width: '100%' }}
          showJumpControls={false}
          header={<h3 style={{ color: 'white' }}>Part 1</h3>}

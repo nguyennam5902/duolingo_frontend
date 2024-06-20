@@ -34,7 +34,7 @@ const UserIndex = () => {
     if (user) {
       try {
         setLoading(true);
-        const data = (await axios.get(`/api/user/${user.data._id}`)).data;
+        const data = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${user.data._id}`)).data;
         // console.log("data:", data);
         setData({
           point: data.data.totalScore,
@@ -61,7 +61,7 @@ const UserIndex = () => {
       <div className="row">
         <div className="col-md-8">
           <div className="card">
-            {!loading && <img src={`/api/image/${user.data._id}`} alt="Person" className="card__image" />}
+            {!loading && user && <img src={`${process.env.NEXT_PUBLIC_API_URL}/image/${user.data._id}`} alt="Person" className="card__image" />}
             <a href='/image-choose'>
               <button style={{
                 marginTop: '4%',
@@ -106,7 +106,7 @@ const UserIndex = () => {
                 setLeft(true);
                 setArray(data.following.map(user => <div style={{ height: '85px', width: '360px', display: 'flex' }}>
                   <a style={{ marginLeft: '2%' }} href={`/user/${user._id}`}>
-                    <img src={`/api/image/${user._id}`} height={'48px'} width={'48px'}
+                    <img src={`${process.env.NEXT_PUBLIC_API_URL}/image/${user._id}`} height={'48px'} width={'48px'}
                       style={{ borderRadius: '50%', border: '1px solid black', marginTop: '25%' }} />
                   </a>
                   <a style={{ textDecoration: 'none', marginLeft: '2%', marginTop: '2%', padding: '0 0px' }}
@@ -137,7 +137,7 @@ const UserIndex = () => {
                 setLeft(false)
                 setArray(data.followers.map((tmp, index) => <div style={{ height: '85px', width: '360px', display: 'flex' }}>
                   <a style={{ marginLeft: '2%' }} href={`/user/${tmp._id}`}>
-                    <img src={`/api/image/${tmp._id}`} height={'48px'} width={'48px'}
+                    <img src={`${process.env.NEXT_PUBLIC_API_URL}/image/${tmp._id}`} height={'48px'} width={'48px'}
                       style={{ borderRadius: '50%', border: '1px solid black', marginTop: '25%' }} />
                   </a>
                   <a style={{ textDecoration: 'none', marginLeft: '2%', marginTop: '2%', padding: '0 0px' }}

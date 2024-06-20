@@ -5,11 +5,11 @@ import Link from "next/link";
 import { Context } from "../context";
 import { useRouter } from "next/router";
 import Head from "next/dist/next-server/lib/head";
+import 'dotenv/config';
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
 
   // state
   const {
@@ -27,8 +27,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
-      const { data } = await axios.post(`/api/login`, {
+      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
         email,
         password,
       });
@@ -40,14 +39,12 @@ const Login = () => {
         window.localStorage.setItem("user", JSON.stringify(data));
         toast.success("Đăng nhập thành công!", { autoClose: 1000, position: 'top-right' });
         router.push("/user");
-        setLoading(false);
       } else {
         toast.error(data.meta.message, { autoClose: 1000, position: 'top-right' });
       }
     } catch (err) {
       console.log(err);
       toast.error("ERROR");
-      setLoading(false);
     }
   };
 

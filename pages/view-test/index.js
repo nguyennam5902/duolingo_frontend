@@ -7,6 +7,7 @@ import { SyncOutlined } from "@ant-design/icons";
 import { getTimeDistance } from '../../utils/helpers'
 import { formatISO9075 } from 'date-fns';
 import { useRouter } from "next/router";
+import 'dotenv/config';
 
 const viewIndex = () => {
    const router = useRouter()
@@ -28,7 +29,7 @@ const viewIndex = () => {
          try {
             if (user) {
                setLoading(true)
-               const tests = (await axios.get(`/api/test/search/${user.data._id}`)).data
+               const tests = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/test/search/${user.data._id}`)).data
                // console.log("DATA:", tests);
                setData(tests.data)
                setFilterData(tests.data)

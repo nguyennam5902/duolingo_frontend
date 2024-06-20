@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import 'dotenv/config';
 import { useRouter } from 'next/router';
 import styles from './lesson.module.css';
 import axios from 'axios';
@@ -23,7 +24,7 @@ function shuffle(array) {
    return array;
 }
 async function getQuiz(courseID, lessonID) {
-   const response = await fetch(`/api/courses/${courseID}/lessons/${lessonID}/exercises`);
+   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/${courseID}/lessons/${lessonID}/exercises`);
    if (!response.ok) {
       throw new Error('Failed to fetch quiz data');
    }
@@ -38,7 +39,7 @@ async function handleEndCourse(point) {
    userAfter.data.weekScore += point;
    window.localStorage.setItem("user", JSON.stringify(userAfter));
 
-   await axios.post(`/api/profile/addScore`, {
+   await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/profile/addScore`, {
       id: userAfter.data._id,
       score: point,
    });
@@ -368,7 +369,7 @@ const QuizContent = ({ quizData }) => {
          if (showResult) {
             const userID = String(JSON.parse(window.localStorage.getItem('user')).data._id);
             const isPerfect = correct === choice.length + fill.length + sentence.length + 1 ? 1 : 0;
-            axios.post(`/api/courses/${courseID}/lessons/${lessonID}/submit/${isPerfect}`, { userID })
+            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/courses/${courseID}/lessons/${lessonID}/submit/${isPerfect}`, { userID })
             handleEndCourse(isPerfect ? 25 : 20)
             return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', marginTop: '15%' }}>
                <div>

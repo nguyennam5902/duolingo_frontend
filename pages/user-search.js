@@ -33,7 +33,7 @@ const UserSearch = () => {
 
    const loadData = async () => {
       if (mainUser) {
-         const mainData = (await axios.get(`api/user/${mainUser.data._id}`)).data;
+         const mainData = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${mainUser.data._id}`)).data;
          console.log("MAIN:", mainData);
          setUserData({
             _id: mainUser.data._id,
@@ -48,7 +48,7 @@ const UserSearch = () => {
          await loadData();
          setClicked(true);
          setLoading(true);
-         const data = (await axios.get(`api/user/search/${input}`)).data;
+         const data = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/search/${input}`)).data;
          const s = data.data.map(user => (userData._id != user._id && !userData.following.map(_ => _._id).includes(user._id)))
          setFollowArr(s);
          setUsers(data.data);
@@ -111,7 +111,7 @@ const UserSearch = () => {
                   <img height={'70px'} width={'70px'} style={{
                      marginTop: '2%', marginLeft: '2%',
                      borderRadius: '50%', border: '1px solid black'
-                  }} src={`/api/image/${user._id}`}></img></a>
+                  }} src={`${process.env.NEXT_PUBLIC_API_URL}/image/${user._id}`}></img></a>
                <a href={`/user/${user._id}`} style={{
                   color: 'black', marginLeft: '4%', fontSize: '24px', fontWeight: 'bold'
                }}>{user.name.length > 17 ? `${user.name.slice(0, 18)}...` : user.name}</a>

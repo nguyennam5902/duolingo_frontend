@@ -44,14 +44,14 @@ const UserIndex = () => {
     try {
       if (userID) {
         setLoading(true);
-        const mainData = (await axios.get(`/api/user/${JSON.parse(localStorage.user).data._id}`)).data;
+        const mainData = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${JSON.parse(localStorage.user).data._id}`)).data;
         // console.log("MAIN:", mainData);
         setUserData({
           followers: mainData.data.followers,
           following: mainData.data.following
         });
         // console.log("PROFILE:", mainData);
-        const userData = (await axios.get(`/api/user/${userID}`)).data;
+        const userData = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${userID}`)).data;
         // console.log("DATA:", userData);
         if (userData.meta.code != 200) {
           router.push(`/errors/404`);
@@ -61,7 +61,7 @@ const UserIndex = () => {
           email: userData.data.email,
           weekScore: userData.data.weekScore,
           totalScore: userData.data.totalScore,
-          imageURL: `/api/image/${userID}`,
+          imageURL: `${process.env.NEXT_PUBLIC_API_URL}/image/${userID}`,
           followers: userData.data.followers,
           following: userData.data.following
         });
@@ -74,7 +74,7 @@ const UserIndex = () => {
     }
   };
   const followFunction = async () => {
-    const w = await axios.post('/api/follow', {
+    const w = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/follow`, {
       "userID": JSON.parse(ls).data._id,
       "friendID": userID
     });
@@ -85,7 +85,7 @@ const UserIndex = () => {
     }
   }
   const unfollowFunction = async () => {
-    const w = await axios.delete('/api/follow', {
+    const w = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/follow`, {
       data: {
         "userID": JSON.parse(ls).data._id,
         "friendID": userID
@@ -171,7 +171,7 @@ const UserIndex = () => {
             setLeft(true);
             setArray(data.following.map(user => <div style={{ height: '85px', width: '360px', display: 'flex' }}>
               <a style={{ marginLeft: '2%' }} href={`/user/${user._id}`}>
-                <img src={`/api/image/${user._id}`} height={'48px'} width={'48px'}
+                <img src={`${process.env.NEXT_PUBLIC_API_URL}/image/${user._id}`} height={'48px'} width={'48px'}
                   style={{ borderRadius: '50%', border: '1px solid black', marginTop: '25%' }} />
               </a>
               <a style={{ textDecoration: 'none', marginLeft: '2%', marginTop: '2%', padding: '0 0px' }}
@@ -203,7 +203,7 @@ const UserIndex = () => {
             setLeft(false);
             setArray(data.followers.map(user => <div style={{ height: '85px', width: '360px', display: 'flex' }}>
               <a style={{ marginLeft: '2%' }} href={`/user/${user._id}`}>
-                <img src={`/api/image/${user._id}`} height={'48px'} width={'48px'}
+                <img src={`${process.env.NEXT_PUBLIC_API_URL}/image/${user._id}`} height={'48px'} width={'48px'}
                   style={{
                     borderRadius: '50%', border: '1px solid black', marginTop: '25%'
                   }} />

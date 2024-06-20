@@ -6,6 +6,7 @@ import { SyncOutlined } from "@ant-design/icons";
 import parse from 'html-react-parser'
 import 'react-h5-audio-player/lib/styles.css';
 import { Context } from "../../context";
+import 'dotenv/config';
 
 const pageIndex = () => {
    const {
@@ -24,7 +25,7 @@ const pageIndex = () => {
    useEffect(() => {
       const getData = async () => {
          if (id) {
-            const data = (await axios.get(`/api/scoring/reading/${id}`)).data.data;
+            const data = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/scoring/reading/${id}`)).data.data;
             // console.log("FULL:", data);
             const r = data.readingID;
             const texts = []
@@ -34,7 +35,7 @@ const pageIndex = () => {
                const tmp = []
                for (let j = 0; j < r[i].questions.length; j++) {
                   const q = r[i].questions[j];
-                  const tmp1 = (await axios.get(`/api/choice-questions/${q}`)).data.data;
+                  const tmp1 = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/choice-questions/${q}`)).data.data;
                   tmp.push(tmp1);
                }
                questions.push(tmp);

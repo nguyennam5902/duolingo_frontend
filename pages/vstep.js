@@ -9,6 +9,7 @@ import AudioRecorder from "../components/RecorderComponent";
 import WritingIndex from "../components/WritingComponent";
 import ReadingComponent from "../components/ReadingComponent";
 import ListeningComponent from "../components/ListeningComponent";
+import 'dotenv/config';
 
 let listeningCorrectCount = 0;
 let readingCorrectCount = 0;
@@ -34,10 +35,10 @@ const vstepIndex = () => {
       const getData = async () => {
          if (user) {
             setLoading(true);
-            const listenData = (await axios.get(`/api/listen/`)).data;
-            const readingData = (await axios.get(`/api/reading/`)).data;
-            const task = (await axios.get(`/api/tasks/`)).data;
-            const speakingData = (await axios.get(`/api/speaking/`)).data;
+            const listenData = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/listen/`)).data;
+            const readingData = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/reading/`)).data;
+            const task = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tasks/`)).data;
+            const speakingData = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/speaking/`)).data;
             let readingLength = 0;
             readingData.data.map(r => readingLength += r.questions.length)
             // console.log("reading:", readingData.data.questions);

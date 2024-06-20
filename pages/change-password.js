@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { Context } from "../context";
 import UserRoute from "../components/routes/UserRoute";
-import { SyncOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import 'dotenv/config';
 
 const UserIndex = () => {
    const {
@@ -22,7 +22,7 @@ const UserIndex = () => {
 
 
    const changePassword = async (oldPassword, newPassword) => {
-      const result = await axios.post('/api/update-password/', {
+      const result = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/update-password/`, {
          userId: user.data._id,
          oldPassword: oldPassword,
          newPassword: newPassword

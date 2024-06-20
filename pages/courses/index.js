@@ -1,5 +1,4 @@
 import styles from './Course.module.css';
-import Link from 'next/link';
 import axios from 'axios';
 import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
@@ -15,7 +14,7 @@ const Courses = () => {
       if (isLogin == null) {
          push('/login');
       }
-      axios.get(`/api/courses`)
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL}/courses`)
          .then((response) => {
             setCourses(response.data.data);
             setLoading(false);

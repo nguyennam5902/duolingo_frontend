@@ -21,11 +21,11 @@ const FollowButton = ({ firstState, userID, friendID, text = "" }) => {
       onClick={async () => {
          let w;
          if (needFollow)
-            w = await axios.post('/api/follow', {
+            w = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/follow`, {
                "userID": userID, "friendID": friendID
             });
          else
-            w = await axios.delete('/api/follow', {
+            w = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/follow`, {
                data: { "userID": userID, "friendID": friendID }
             });
          if (w.data.meta.code == 200) {

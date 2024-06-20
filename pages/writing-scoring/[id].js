@@ -8,6 +8,7 @@ import 'react-h5-audio-player/lib/styles.css';
 import { Context } from "../../context";
 import { toast } from "react-toastify";
 import AutoExpandingTextarea from '../../components/AutoExpandingTextarea';
+import 'dotenv/config';
 
 const pageIndex = () => {
    const {
@@ -36,7 +37,7 @@ const pageIndex = () => {
       const getData = async () => {
          if (id) {
             setLoading(true)
-            const data = (await axios.get(`/api/scoring/writing/${id}`)).data.data;
+            const data = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/scoring/writing/${id}`)).data.data;
             setData({
                userID: data.userID,
                type: data.taskID.type,
@@ -79,7 +80,7 @@ const pageIndex = () => {
                type='number' max={10} min={0} onChange={(e) => setScore(e.target.value)} ></input>
             {data.score == -1 && <button disabled={!score || data.score != -1} onClick={async (e) => {
                e.target.disabled = true;
-               axios.post('/api/scoring/writing/', {
+               axios.post(`${process.env.NEXT_PUBLIC_API_URL}/scoring/writing/`, {
                   id: id,
                   score: score
                })

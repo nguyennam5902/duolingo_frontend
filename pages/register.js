@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Context } from "../context";
 import { useRouter } from "next/router";
 import Head from "next/dist/next-server/lib/head";
+import 'dotenv/config';
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -28,7 +29,7 @@ const Register = () => {
     // console.table({ name, email, password });
     try {
       setLoading(true);
-      const { data } = await axios.post(`api/register`, {
+      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
         name,
         email,
         password,

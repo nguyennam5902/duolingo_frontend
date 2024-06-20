@@ -14,7 +14,7 @@ const LeaderBoard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/leaderboard?size=5`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/leaderboard?size=5`);
         const data = await response.json();
         // console.log("Response: " + data.data[0]._id)
         setUsers(data.data);
@@ -35,7 +35,7 @@ const LeaderBoard = () => {
     if (newPage >= 0 && newPage <= totalPages - 1) {
       setCurrentPage(newPage);
       try {
-        const response = await fetch(`/api/leaderboard?size=5&page=` + newPage);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/leaderboard?size=5&page=` + newPage);
         const data = await response.json();
         console.log("Page: " + newPage)
         setUsers(data.data);
@@ -78,7 +78,7 @@ const LeaderBoard = () => {
               </div>
               <img style={{
                 borderRadius: '50%',
-              }} height={'50px'} width={'50px'} src={`/api/image/${user._id}`}></img>
+              }} height={'50px'} width={'50px'} src={`${process.env.NEXT_PUBLIC_API_URL}/image/${user._id}`}></img>
               <p style={{
                 fontSize: '17px',
                 color: 'black',

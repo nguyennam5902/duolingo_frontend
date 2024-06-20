@@ -8,6 +8,7 @@ import 'react-h5-audio-player/lib/styles.css';
 import AudioPlayer from 'react-h5-audio-player';
 import { Context } from "../../context";
 import { toast } from "react-toastify";
+import 'dotenv/config';
 
 const pageIndex = () => {
    const {
@@ -26,7 +27,7 @@ const pageIndex = () => {
    useEffect(() => {
       const getData = async () => {
          if (id) {
-            const data = (await axios.get(`/api/scoring/speaking/${id}`)).data.data;
+            const data = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/scoring/speaking/${id}`)).data.data;
             setData({
                userID: data.userID,
                parts: data.speakingID,
@@ -58,7 +59,7 @@ const pageIndex = () => {
             fontSize: '16px'
          }}>
             <AudioPlayer
-               src={`/api/speaking/answers/${id}`}
+               src={`${process.env.NEXT_PUBLIC_API_URL}/speaking/answers/${id}`}
                style={{
                   width: '100%'
                }}
@@ -77,7 +78,7 @@ const pageIndex = () => {
                type='number' max={10} min={0} onChange={(e) => setScore(e.target.value)} ></input>
             {data.score == -1 && <button disabled={!score || data.score != -1} onClick={(e) => {
                e.target.disabled = true;
-               axios.post('/api/scoring/speaking/', {
+               axios.post(`${process.env.NEXT_PUBLIC_API_URL}/scoring/speaking/`, {
                   id: id,
                   score: score
                })

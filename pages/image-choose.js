@@ -9,7 +9,7 @@ const ImageUpload = () => {
   const { state: { user } } = useContext(Context)
   const [loading, setLoading] = useState(false)
   const [pageState, setPageState] = useState({
-    imageURL: process.env.NEXT_PUBLIC_DEFAULT_PROFILE_URL,
+    imageURL: ``,
     selectedImage: null,
     loading: false,
   })
@@ -17,7 +17,7 @@ const ImageUpload = () => {
 
   const loadUserData = async () => {
     setPageState({
-      imageURL: `/api/image/${user.data._id}`,
+      imageURL: `${process.env.NEXT_PUBLIC_API_URL}/image/${user.data._id}`,
       loading: pageState.loading,
     })
   }
@@ -66,7 +66,7 @@ const ImageUpload = () => {
       formData.append('userID', user.data._id)
 
       try {
-        const response = (await axios.post('/api/upload', formData)).data
+        const response = (await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/upload`, formData)).data
 
         if (response.meta.code == 200) {
           toast.success('Image uploaded successfully')
