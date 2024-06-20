@@ -1,5 +1,4 @@
 import AudioPlayer from 'react-h5-audio-player';
-import 'react-h5-audio-player/lib/styles.css';
 import 'dotenv/config';
 
 const ListeningComponent = ({ filename, listenQuestions, listenChoices, setListenChoices }) => {

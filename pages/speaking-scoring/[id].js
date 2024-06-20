@@ -4,7 +4,6 @@ import Head from 'next/head';
 import axios from "axios";
 import { SyncOutlined } from "@ant-design/icons";
 import parse from 'html-react-parser'
-import 'react-h5-audio-player/lib/styles.css';
 import AudioPlayer from 'react-h5-audio-player';
 import { Context } from "../../context";
 import { toast } from "react-toastify";

@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from "react";
 import Head from 'next/head';
 import { toast } from "react-toastify";
 import { SyncOutlined } from '@ant-design/icons'
-import 'react-h5-audio-player/lib/styles.css';
 import { Context } from "../context";
 import AudioRecorder from "../components/RecorderComponent";
 import WritingIndex from "../components/WritingComponent";

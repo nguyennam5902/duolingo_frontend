@@ -3,7 +3,6 @@ import { useEffect, useState, useContext } from "react";
 import Head from 'next/head';
 import axios from "axios";
 import AudioPlayer from 'react-h5-audio-player';
-import 'react-h5-audio-player/lib/styles.css';
 import { SyncOutlined } from '@ant-design/icons'
 import parse from 'html-react-parser'
 import AutoExpandingTextarea from '../../components/AutoExpandingTextarea';
