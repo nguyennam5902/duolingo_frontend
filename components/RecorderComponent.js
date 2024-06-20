@@ -131,26 +131,22 @@ const AudioRecorder = ({ listeningCorrectCount, readingCorrectCount, user, liste
             // TODO: FINISHED LISTENING
             const readingAnswerID = (await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/reading/submit/`, {
                readingIDs: readingIDs,
-               userID: user.data._id,
                choices: readingChoices,
                score: readingCorrectCount
             })).data
             // TODO: FINISHED READING
             const listeningAnswerID = (await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/listen/submit/`, {
                listeningID: listenID,
-               userID: user.data._id,
                choices: listeningChoices,
                score: listeningCorrectCount
             })).data
             // TODO: FINISHED WRITING
             const taskAnswerID = (await Promise.all(writingData.map(data => axios.post(`${process.env.NEXT_PUBLIC_API_URL}/task/submit/`, {
                taskID: data._id,
-               userID: user.data._id,
                content: data.answer
             })))).map(task => task.data.data)
             const speakingAnswerID = (await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/speaking/upload`, {
                file: finalRecord,
-               userID: user.data._id,
                parts: speakingData.map(part => part._id)
             })).data
             // console.log("LISTENING:", listeningAnswerID.data);
