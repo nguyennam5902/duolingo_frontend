@@ -38,7 +38,7 @@ const pageIndex = () => {
       const getData = async () => {
          if (id) {
             setLoading(true)
-            const data = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/view-test/${id}`)).data
+            const data = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/test/${id}`)).data
             // console.log("DATA:", data.data);
             setData({
                filename: data.data.listeningAnswerID.listeningID.fileID,
