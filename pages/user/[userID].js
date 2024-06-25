@@ -146,7 +146,7 @@ const UserIndex = () => {
       </button >}
     </div >
     <div style={{
-      width: '400px', marginTop: `-2${(check(userID) || (ls && userID != JSON.parse(ls).data._id)) ? 7 : 2}%`,
+      width: '400px', marginTop: `-410px`,
       marginLeft: '60%'
     }}>
       <div style={{ display: 'flex' }}>
