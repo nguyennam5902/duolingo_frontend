@@ -24,7 +24,7 @@ const pageIndex = () => {
       readingData: [],
       readingChoices: [],
       writingData: [],
-      speakingAnswerID: "",
+      speakingAnswerFilename: "",
       speakingParts: [],
       speakingScore: -1
    }
@@ -40,6 +40,7 @@ const pageIndex = () => {
             setLoading(true)
             const data = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/test/${id}`)).data
             // console.log("DATA:", data.data);
+            // TODO: FIX
             setData({
                filename: data.data.listeningAnswerID.listeningID.fileID,
                listenQuestions: data.data.listeningAnswerID.listeningID.questions,
@@ -49,7 +50,7 @@ const pageIndex = () => {
                readingChoices: data.data.readingAnswerID.choices,
                readingScore: data.data.readingAnswerID.score,
                writingData: data.data.taskAnswerID,
-               speakingAnswerID: data.data.speakingAnswerID._id,
+               speakingAnswerFilename: data.data.speakingAnswerID.filename,
                speakingParts: data.data.speakingAnswerID.speakingID,
                speakingScore: data.data.speakingAnswerID.score
             })
@@ -187,7 +188,7 @@ const pageIndex = () => {
                         <h5>Số câu hỏi: 3</h5>
                      </div>
                      <AudioPlayer
-                        src={`${process.env.NEXT_PUBLIC_API_URL}/speaking/answers/${data.speakingAnswerID}`}
+                        src={`${process.env.NEXT_PUBLIC_API_URL}/speaking/answers/${data.speakingAnswerFilename}`}
                         style={{ width: '100%' }}
                         header={<h3 style={{ color: 'white' }}>Student audio</h3>}
                      />

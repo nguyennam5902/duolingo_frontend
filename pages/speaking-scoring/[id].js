@@ -14,7 +14,7 @@ const pageIndex = () => {
       state: { user },
    } = useContext(Context);
    const firstState = {
-      userID: "",
+      filename: "",
       parts: [],
       score: -1
    }
@@ -28,7 +28,7 @@ const pageIndex = () => {
          if (id) {
             const data = (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/scoring/speaking/${id}`)).data.data;
             setData({
-               userID: data.userID,
+               filename: data.filename,
                parts: data.speakingID,
                score: data.score
             })
@@ -58,7 +58,7 @@ const pageIndex = () => {
             fontSize: '16px'
          }}>
             <AudioPlayer
-               src={`${process.env.NEXT_PUBLIC_API_URL}/speaking/answers/${id}`}
+               src={`${process.env.NEXT_PUBLIC_API_URL}/speaking/answers/${data.filename}`}
                style={{
                   width: '100%'
                }}
@@ -86,7 +86,7 @@ const pageIndex = () => {
             }}>
                Finish
             </button>}
-            <br/><a href='/scoring'>Quay trở về</a>
+            <br /><a href='/scoring'>Quay trở về</a>
          </div>}
       </div>
    </>
